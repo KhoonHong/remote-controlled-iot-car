@@ -10,6 +10,7 @@ class Camera:
             return self.opencv_stream()
 
     def pi_camera_stream(self):
+        import picamera
         with picamera.PiCamera() as camera:
             camera.resolution = (640, 480)
             camera.framerate = 24
