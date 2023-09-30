@@ -12,5 +12,5 @@ urlpatterns = [
     path('register/', register_user, name="register"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path('camera/', camera_feed, name='camera_feed'),
-    path('', live_camera_feed, name='live_camera_feed')
+    path('live_camera_feed/', live_camera_feed, name='live_camera_feed')
 ]
