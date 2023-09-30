@@ -8,6 +8,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm, SignUpForm
 
+import io
+import picamera
+from django.http import StreamingHttpResponse
+
 
 def login_view(request):
     form = LoginForm(request.POST or None)
@@ -57,12 +61,8 @@ def register_user(request):
 
 
 def live_camera_feed(request):
-    return render(request, 'accounts/live_camera_feed.html')
+    return render(request, 'home/test.html')
 
-
-import io
-import picamera
-from django.http import StreamingHttpResponse
 
 class Camera:
     def stream(self):
