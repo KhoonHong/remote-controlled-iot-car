@@ -54,3 +54,7 @@ def register_user(request):
         form = SignUpForm()
 
     return render(request, "accounts/register.html", {"form": form, "msg": msg, "success": success})
+
+
+def live_camera_feed(request):
+    return render(request, 'accounts/live_camera_feed.html')
