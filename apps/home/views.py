@@ -51,7 +51,7 @@ def pages(request):
 
 
 def live_camera_feed(request):
-    return render(request, 'accounts/test.html')
+    return render(request, 'home/test.html')
 
 
 class Camera:
