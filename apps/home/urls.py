@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from django.urls import path, re_path
 from apps.home import views
-from .views import login_view, register_user, camera_feed, live_camera_feed
+from .views import camera_feed, live_camera_feed
 
 urlpatterns = [
 
