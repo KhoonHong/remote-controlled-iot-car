@@ -61,7 +61,7 @@ def register_user(request):
 
 
 def live_camera_feed(request):
-    return render(request, 'home/test.html')
+    return render(request, 'accounts/test.html')
 
 
 class Camera:
