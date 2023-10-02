@@ -85,7 +85,7 @@ def get_temperature_humidity(request):
     return JsonResponse({'temperature': temperature, 'humidity': humidity})
 
 @csrf_exempt
-def control_car(request):
+def control_car_view(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         x = data.get('x')

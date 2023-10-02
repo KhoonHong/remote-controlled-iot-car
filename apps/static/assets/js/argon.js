@@ -1169,7 +1169,7 @@ function checkInputs() {
 }
 
 function sendDataToBackend(x, y) {
-  fetch("/control_car/", {
+  fetch("/control_car_view/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
