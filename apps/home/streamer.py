@@ -77,8 +77,13 @@ class Camera:
 
 
     def pi_camera_stop_recording(self):
-        self.camera.stop_recording()
-        self.camera.close()
+        if hasattr(self, 'camera'):
+            self.camera.stop_recording()
+            self.camera.close()
+            del self.camera
+        else:
+            print("Error: Camera not initialized!")
+
 
     def opencv_start_recording(self):
         import cv2
