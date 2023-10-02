@@ -84,13 +84,13 @@ def control_car(x, y):
     # Define the motor action for each direction range:
     thresholds = [
         (22.5, motor_stop),  # stop for slight nudges
-        (67.5, lambda: (motor_forward(), set_speed_left(speed), set_speed_right(int(speed * 0.5)))),  # Forward veering right
+        (67.5, lambda: (motor_forward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),  # Forward veering left
         (112.5, lambda: (motor_forward(), set_speed_left(speed), set_speed_right(speed))),  # Forward straight
-        (157.5, lambda: (motor_forward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),  # Forward veering left
-        (202.5, lambda: (motor_backward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),  # Backward veering left
-        (247.5, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(speed))),  # Backward straight
-        (292.5, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(int(speed * 0.5)))),  # Backward veering right
-        (337.5, lambda: (motor_stop())),  # Stop before looping to zero
+        (157.5, lambda: (motor_forward(), set_speed_left(speed), set_speed_right(int(speed * 0.5)))),  # Forward veering right
+        (202.5, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(int(speed * 0.5)))),  # Backward veering right
+        (247.5, lambda: (motor_backward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),  # Backward veering left
+        (292.5, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(speed))),  # Backward straight
+        (337.5, motor_stop),  # Stop near back point
         (360, motor_stop)  # Stop at zero
     ]
 
