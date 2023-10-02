@@ -5,8 +5,16 @@ class Camera:
     def __init__(self):
         self.is_recording = False
         self.recording_path = None
+        self.camera = None
+
+    def init_camera(self):
+        if self.camera is None:
+            import picamera
+            self.camera = picamera.PiCamera(resolution=(640, 480), framerate=24)
 
     def stream(self):
+        self.init_camera()
+
         try:
             import picamera
             return self.pi_camera_stream()
@@ -15,16 +23,12 @@ class Camera:
             return self.opencv_stream()
 
     def pi_camera_stream(self):
-        import picamera
-        with picamera.PiCamera() as camera:
-            camera.resolution = (640, 480)
-            camera.framerate = 24
-            stream = io.BytesIO()
-            for _ in camera.capture_continuous(stream, format='jpeg', quality=70, use_video_port=True):
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + stream.getvalue() + b'\r\n')
-                stream.seek(0)
-                stream.truncate()
+        stream = io.BytesIO()
+        for _ in self.camera.capture_continuous(stream, format='jpeg', quality=70, use_video_port=True):
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + stream.getvalue() + b'\r\n')
+            stream.seek(0)
+            stream.truncate()
 
     def opencv_stream(self):
         import cv2
@@ -44,46 +48,36 @@ class Camera:
         self.recording_path = save_path
         if os.path.exists(self.recording_path):
             os.remove(self.recording_path)
+        self.init_camera()
 
         try:
-            import picamera
             self.pi_camera_start_recording()
-        except ImportError:
+        except AttributeError:
             import cv2
             self.opencv_start_recording()
 
     def stop_recording(self):
-        try:
-            import picamera
-            self.pi_camera_stop_recording()
-        except ImportError:
-            import cv2
-            self.opencv_stop_recording()
-        self.is_recording = False
+        if self.is_recording:
+            try:
+                self.pi_camera_stop_recording()
+            except AttributeError:
+                import cv2
+                self.opencv_stop_recording()
+            self.is_recording = False
 
     def pi_camera_start_recording(self):
-        import picamera
-
-        # Check if camera is already initialized
-        if hasattr(self, 'camera'):
-            self.pi_camera_stop_recording()
-
-        try:
-            self.camera = picamera.PiCamera(resolution=(640, 480), framerate=24)
-            self.camera.start_recording(self.recording_path)
+        if not self.is_recording:
+            self.camera.start_recording(self.recording_path, splitter_port=1, resize=(640,480))
             self.is_recording = True
-        except picamera.PiCameraError as e:
-            print(f"Error starting recording: {e}")
-
 
     def pi_camera_stop_recording(self):
-        if hasattr(self, 'camera'):
-            self.camera.stop_recording()
-            self.camera.close()
-            del self.camera
-        else:
-            print("Error: Camera not initialized!")
+        if self.is_recording:
+            self.camera.stop_recording(splitter_port=1)
 
+    def close_camera(self):
+        if self.camera:
+            self.camera.close()
+            self.camera = None
 
     def opencv_start_recording(self):
         import cv2
