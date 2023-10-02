@@ -1123,15 +1123,7 @@ $(document).ready(function () {
 			icon: 'success',
 			title: "Gamepad connected: " + e.originalEvent.gamepad.id
 		});
-
-		// Inside the gamepadconnected event handler, you can set up input handling
-		const gamepad = e.originalEvent.gamepad;
-
-		// Assume gamepad.buttons[0] represents the "A" button
-		// Check for the "A" button press and vibrate the controller
-		if (gamepad.buttons[0].pressed) {
-			vibrateController(gamepad);
-		}
+		vibrateController(gamepad);
 	});
 
 	$(window).on("gamepaddisconnected", function (e) {
