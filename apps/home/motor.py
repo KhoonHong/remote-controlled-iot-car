@@ -84,20 +84,21 @@ def control_car(x, y):
     # Define the motor action for each direction range:
     thresholds = [
         (22.5, motor_stop),  # stop for slight nudges
-        (67.5, lambda: (motor_forward(), set_speed_left(speed), set_speed_right(int(speed * 0.5)))),
-        (112.5, lambda: (motor_forward(), set_speed_left(speed), set_speed_right(0))),
-        (157.5, lambda: (motor_forward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),
-        (202.5, lambda: (motor_forward(), set_speed_left(0), set_speed_right(speed))),
-        (247.5, lambda: (motor_backward(), set_speed_left(0), set_speed_right(speed))),
-        (292.5, lambda: (motor_backward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),
-        (337.5, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(0))),
-        (360, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(int(speed * 0.5))))
+        (67.5, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(int(speed * 0.5)))),  # These are adjusted
+        (112.5, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(0))),  # These are adjusted
+        (157.5, lambda: (motor_backward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),  # These are adjusted
+        (202.5, lambda: (motor_forward(), set_speed_left(0), set_speed_right(speed))),  # These are adjusted
+        (247.5, lambda: (motor_forward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),  # These are adjusted
+        (292.5, lambda: (motor_forward(), set_speed_left(speed), set_speed_right(0))),  # These are adjusted
+        (337.5, lambda: (motor_forward(), set_speed_left(speed), set_speed_right(int(speed * 0.5)))),  # These are adjusted
+        (360, motor_stop)
     ]
 
     for threshold, action in thresholds:
         if angle < threshold:
             action()
             break
+
 
 
 def cleanup():
