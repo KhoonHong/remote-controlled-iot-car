@@ -8,6 +8,7 @@ class SensorsConfig(AppConfig):
 
     def ready(self):
         if os.name != 'nt':
+            print("Starting DHT11 reader...")
             start_reading()
 
 
@@ -17,4 +18,5 @@ class GpsDataConfig(AppConfig):
 
     def ready(self):
         if os.name != 'nt':
+            print("Starting GPS reader...")
             start_reading()

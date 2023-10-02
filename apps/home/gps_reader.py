@@ -24,6 +24,7 @@ def read_gps():
                 parts = line.split(',')
                 latitude = float(parts[1])  # Convert to desired format as needed
                 longitude = float(parts[3])  # Convert to desired format as needed
+                print("Latitude: %s \t Longitude: %s" % (latitude, longitude))
                 store_to_firestore(latitude, longitude)
             time.sleep(30)
 
