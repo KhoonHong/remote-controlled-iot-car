@@ -1172,6 +1172,10 @@ $(document).ready(function () {
 			method: 'GET',
 			success: function(data) {
 				console.log(data.status);
+				Toast.fire({
+					icon: 'success',
+					title: "Recording Started: " + data.status
+				});
 			}
 		});
 	});
@@ -1181,7 +1185,10 @@ $(document).ready(function () {
 			url: '/stop_recording/',
 			method: 'GET',
 			success: function(data) {
-				console.log(data.status);
+				Toast.fire({
+					icon: 'success',
+					title: "Recording Stopped: " + data.status
+				});
 			}
 		});
 	});
