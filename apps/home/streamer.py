@@ -1,6 +1,10 @@
 import io
 
 class Camera:
+    def __init__(self):
+        self.is_recording = False
+        self.recording_path = None
+
     def stream(self):
         try:
             import picamera
@@ -34,3 +38,45 @@ class Camera:
                        b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
         finally:
             cap.release()
+
+    def start_recording(self, save_path="video.h264"):
+        self.recording_path = save_path
+        if os.path.exists(self.recording_path):
+            os.remove(self.recording_path)
+
+        try:
+            import picamera
+            self.pi_camera_start_recording()
+        except ImportError:
+            import cv2
+            self.opencv_start_recording()
+
+    def stop_recording(self):
+        try:
+            import picamera
+            self.pi_camera_stop_recording()
+        except ImportError:
+            import cv2
+            self.opencv_stop_recording()
+        self.is_recording = False
+
+    def pi_camera_start_recording(self):
+        import picamera
+        self.camera = picamera.PiCamera()
+        self.camera.start_recording(self.recording_path)
+        self.is_recording = True
+
+    def pi_camera_stop_recording(self):
+        self.camera.stop_recording()
+        self.camera.close()
+
+    def opencv_start_recording(self):
+        import cv2
+        self.cap = cv2.VideoCapture(0)
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        self.out = cv2.VideoWriter(self.recording_path, fourcc, 20.0, (640,480))
+        self.is_recording = True
+
+    def opencv_stop_recording(self):
+        self.out.release()
+        self.cap.release()

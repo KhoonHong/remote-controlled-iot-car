@@ -4,10 +4,16 @@ import serial
 import firebase_admin
 import pynmea2
 from firebase_admin import firestore
+import os
 
-port = "/dev/ttyAMA0"
-ser = serial.Serial(port, baudrate=9600, timeout=1)
-dataout = pynmea2.NMEAStreamReader()
+port, ser, dataout = None, None, None
+
+if os.name == 'nt':
+    port = "COM3"  # Replace with your COM port on Windows
+else:
+    port = "/dev/ttyAMA0"
+    ser = serial.Serial(port, baudrate=9600, timeout=1)
+    dataout = pynmea2.NMEAStreamReader()
 
 def store_to_firestore(latitude, longitude):
     try:
@@ -24,7 +30,7 @@ def store_to_firestore(latitude, longitude):
 def read_gps():
     while True:  # Add a continuous loop to read data
         newdata = ser.readline()
-        print("reading data from gps...")
+        print("Reading data from gps...")
         if '$GPRMC' in str(newdata):
             try:
                 newmsg = pynmea2.parse(newdata.decode('utf-8'))
@@ -36,7 +42,7 @@ def read_gps():
                     store_to_firestore(lat, lng)  # Store data to Firestore
             except pynmea2.nmea.ParseError:
                 print("Error parsing NMEA sentence.")
-        time.sleep(10)  # Consider reducing or removing this sleep depending on your needs
+        time.sleep(30)  # Consider reducing or removing this sleep depending on your needs
 
 def start_reading_gps():
     thread = threading.Thread(target=read_gps)

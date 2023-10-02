@@ -16,6 +16,8 @@ from firebase_admin import firestore
 
 from django.http import StreamingHttpResponse
 
+camera = Camera()
+
 
 @login_required(login_url="/login/")
 def index(request):
@@ -54,9 +56,16 @@ def pages(request):
 def live_camera_feed(request):
     return render(request, 'home/test.html')
 
-
 def camera_feed(request):
-    return StreamingHttpResponse(Camera().stream(), content_type='multipart/x-mixed-replace; boundary=frame')
+    return StreamingHttpResponse(camera.stream(), content_type='multipart/x-mixed-replace; boundary=frame')
+
+def start_recording(request):
+    camera.start_recording()
+    return JsonResponse({'status': 'recording started'})
+
+def stop_recording(request):
+    camera.stop_recording()
+    return JsonResponse({'status': 'recording stopped'})
 
 
 def get_temperature_humidity(request):

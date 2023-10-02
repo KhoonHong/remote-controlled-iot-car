@@ -1094,6 +1094,10 @@ const Toast = Swal.mixin({
 	showConfirmButton: false,
 	timer: 3000,
 	timerProgressBar: true,
+	iconColor: 'white',
+	customClass: {
+		popup: 'colored-toast'
+	  },
 	didOpen: (toast) => {
 		toast.addEventListener('mouseenter', Swal.stopTimer)
 		toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -1130,16 +1134,16 @@ function fetchDataAndUpdateChart(chartElementId) {
 }
 
 $(document).ready(function () {
-	const initialData = $('[data-toggle="chart"]').data('update');
-    const $chartElement = $('#chart-sales-dark');
-    const ctx = $chartElement[0].getContext('2d');
+	// const initialData = $('[data-toggle="chart"]').data('update');
+    // const $chartElement = $('#chart-sales-dark');
+    // const ctx = $chartElement[0].getContext('2d');
 
-	// Initialize the Chart.js chart
-    const myChart = new Chart(ctx, {
-        type: 'line',
-        data: initialData.data,
-        // Add other chart options if needed
-    });
+	// // Initialize the Chart.js chart
+    // const myChart = new Chart(ctx, {
+    //     type: 'line',
+    //     data: initialData.data,
+    //     // Add other chart options if needed
+    // });
 
 	$(window).on("gamepadconnected", function (e) {
 		const gamepad = e.originalEvent.gamepad
@@ -1157,7 +1161,28 @@ $(document).ready(function () {
 		});
 	});
 
-	setInterval(() => {
-		fetchDataAndUpdateChart('#chart-sales-dark');
-	}, 10000);  // 10000 milliseconds = 10 seconds
+	// setInterval(() => {
+	// 	fetchDataAndUpdateChart('#chart-sales-dark');
+	// }, 30000);  // 10000 milliseconds = 10 seconds
+
+
+	$("#startBtn").click(function(){
+		$.ajax({
+			url: '/start_recording/',
+			method: 'GET',
+			success: function(data) {
+				console.log(data.status);
+			}
+		});
+	});
+
+	$("#stopBtn").click(function(){
+		$.ajax({
+			url: '/stop_recording/',
+			method: 'GET',
+			success: function(data) {
+				console.log(data.status);
+			}
+		});
+	});
 });

@@ -37,7 +37,7 @@ def read_dht11():
             store_to_firestore(temperature, humidity)
         else:
             print("Sensor failure. Check wiring.")
-        time.sleep(10)
+        time.sleep(30)
 
 def start_reading_dht11():
     thread = threading.Thread(target=read_dht11)
