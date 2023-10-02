@@ -1103,7 +1103,7 @@ const Toast = Swal.mixin({
 function vibrateController(gamepad) {
 	gamepad.vibrationActuator.playEffect('dual-rumble', {
 		startDelay: 0, // Add a delay in milliseconds
-		duration: 1000, // Total duration in milliseconds
+		duration: 500, // Total duration in milliseconds
 		weakMagnitude: 0.5, // intensity (0-1) of the small ERM 
 		strongMagnitude: 1 // intesity (0-1) of the bigger ERM
 	  }).then(() => {
