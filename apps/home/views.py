@@ -90,6 +90,7 @@ def control_car(request):
         data = json.loads(request.body)
         x = data.get('x')
         y = data.get('y')
+        print(x, y)
         # control_car(x, y)
 
         return JsonResponse({"status": "success"})
