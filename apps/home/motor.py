@@ -44,6 +44,7 @@ def control_car(x, y):
 
     # Check for near center values
     if abs(x) < NEAR_CENTER_THRESHOLD and abs(y) < NEAR_CENTER_THRESHOLD:
+        print("Stopping motors")
         motor_stop()
         return
 
