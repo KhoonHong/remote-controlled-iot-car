@@ -31,6 +31,10 @@ def motor_backward():
     GPIO.output([IN2, IN4], False)
 
 def motor_stop():
+    GPIO.output(IN1, False)
+    GPIO.output(IN2, False)
+    GPIO.output(IN3, False)
+    GPIO.output(IN4, False)
     GPIO.output([ENA, ENB], False)
 
 def set_speed_left(speed_percentage):
