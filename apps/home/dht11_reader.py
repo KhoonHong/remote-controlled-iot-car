@@ -16,7 +16,7 @@ else:
 
 
 DHT_SENSOR = Adafruit_DHT.DHT11
-DHT_PIN = 4  # Assuming DHT11 is connected to GPIO4, change as needed
+DHT_PIN = 26  # Assuming DHT11 is connected to GPIO4, change as needed
 
 def store_to_firestore(temperature, humidity):
     db = firebase_admin.firestore.client()
@@ -35,9 +35,9 @@ def read_dht11():
             store_to_firestore(temperature, humidity)
         else:
             print("Sensor failure. Check wiring.")
-        time.sleep(30)
+        time.sleep(10)
 
-def start_reading():
+def start_reading_dht11():
     thread = threading.Thread(target=read_dht11)
     thread.daemon = True
     thread.start()

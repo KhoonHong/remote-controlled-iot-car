@@ -26,9 +26,9 @@ def read_gps():
                 longitude = float(parts[3])  # Convert to desired format as needed
                 print("Latitude: %s \t Longitude: %s" % (latitude, longitude))
                 store_to_firestore(latitude, longitude)
-            time.sleep(30)
+            time.sleep(10)
 
-def start_reading():
+def start_reading_gps():
     thread = threading.Thread(target=read_gps)
     thread.daemon = True
     thread.start()

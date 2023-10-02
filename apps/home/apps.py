@@ -1,5 +1,6 @@
 from django.apps import AppConfig
-from .dht11_reader import start_reading
+from .dht11_reader import start_reading_dht11
+from .gps_reader import start_reading_gps
 import io
 
 def is_raspberrypi():
@@ -16,17 +17,11 @@ class SensorsConfig(AppConfig):
     def ready(self):
         if is_raspberrypi():
             print("Starting DHT11 reader...")
-            start_reading()
-
-
-class GpsDataConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'gps_data'
-
-    def ready(self):
-        if is_raspberrypi():
+            start_reading_dht11()
             print("Starting GPS reader...")
-            start_reading()
+            start_reading_gps()
+
+
 
 
 
