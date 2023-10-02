@@ -13,7 +13,7 @@ def store_to_firestore(latitude, longitude):
     doc_ref.set({
         'latitude': latitude,
         'longitude': longitude,
-        'timestamp': firestore.SERVER_TIMESTAMP
+        'timestamp': firebase_admin.firestore.SERVER_TIMESTAMP
     })
 
 def read_gps():

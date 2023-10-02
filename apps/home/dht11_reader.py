@@ -24,7 +24,7 @@ def store_to_firestore(temperature, humidity):
     doc_ref.set({
         'temperature': temperature,
         'humidity': humidity,
-        'timestamp': firestore.SERVER_TIMESTAMP
+        'timestamp': firebase_admin.firestore.SERVER_TIMESTAMP
     })
 
 def read_dht11():
