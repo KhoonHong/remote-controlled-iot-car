@@ -1144,6 +1144,7 @@ function checkInputs() {
 
     // Check if the joystick has moved
     if (x !== prevX || y !== prevY) {
+		console.log(x, y)
         sendDataToBackend(x, y);
     }
 
