@@ -1137,18 +1137,10 @@ let prevX = null;
 let prevY = null;
 let gamepadConnected = false;
 
-function checkInputs() {
+function checkInputs(gamepad) {
 	if (!gamepadConnected) {
         console.log('Gamepad polling stopped due to disconnection.');
         return;  // Exit the function if the gamepad is not connected
-    }
-
-    let gamepad = navigator.getGamepads();
-
-	// Check if the first gamepad is still present
-    if (!gamepads || !gamepads[0]) {
-        console.log('No gamepad connected');
-        return;
     }
 
     let x = gamepad.axes[0];
@@ -1196,7 +1188,7 @@ $(document).ready(function () {
 			title: "Gamepad connected: " + e.originalEvent.gamepad.id
 		});
 		gamepadConnected = true;
-		checkInputs(); 
+		checkInputs(gamepad); 
 		vibrateController(gamepad);
 	});
 
