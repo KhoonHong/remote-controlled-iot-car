@@ -24,6 +24,7 @@ def store_to_firestore(latitude, longitude):
 def read_gps():
     while True:  # Add a continuous loop to read data
         newdata = ser.readline()
+        print("reading data from gps...")
         if '$GPRMC' in str(newdata):
             try:
                 newmsg = pynmea2.parse(newdata.decode('utf-8'))
