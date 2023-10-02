@@ -77,7 +77,8 @@ def control_car(x, y):
         angle += 360
     distance = min(math.sqrt(x**2 + y**2), 1)
     speed = int(distance * 100)
-
+    print(f"Angle: {angle}, Speed: {speed}")
+    print(f"Distance: {distance}, Speed: {speed}")
     thresholds = [
         (67.5, lambda: (speed, int(speed * 0.5)), motor_forward),
         (112.5, lambda: (speed, 0), motor_forward),
