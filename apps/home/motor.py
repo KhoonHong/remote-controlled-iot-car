@@ -72,8 +72,7 @@ def set_speed_right(speed_percentage):
     pwmB.ChangeDutyCycle(speed_percentage)
 
 def control_car(x, y):
-    distance = math.sqrt(x**2 + y**2)
-    if distance < 0.1:  # this threshold may need adjusting
+    if x == 0  and y == 0:  
         motor_stop()
         return
 
