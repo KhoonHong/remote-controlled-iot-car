@@ -12,6 +12,7 @@ urlpatterns = [
     path('get_temperature_humidity/', views.get_temperature_humidity, name='get_temperature_humidity'),
     path('start_recording/', views.start_recording, name='start_recording'),
     path('stop_recording/', views.stop_recording, name='stop_recording'),
+    path('control_car/', views.control_car, name='control_car'),
     path('live_camera_feed/', live_camera_feed, name='live_camera_feed'),
     path('', views.index, name='home'),
 

@@ -14,6 +14,7 @@ from django.http import JsonResponse
 import firebase_admin
 from firebase_admin import firestore
 import time
+from .motor import *
 
 from django.http import StreamingHttpResponse
 
@@ -81,3 +82,11 @@ def get_temperature_humidity(request):
         humidity.append(data['humidity'])
     
     return JsonResponse({'temperature': temperature, 'humidity': humidity})
+
+
+def control_car(request):
+    direction = request.POST.get('direction')
+
+    return JsonResponse({"status": "success"})
+
+

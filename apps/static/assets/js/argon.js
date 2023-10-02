@@ -1133,6 +1133,38 @@ function fetchDataAndUpdateChart(chartElementId) {
         });
 }
 
+let prevX = null;
+let prevY = null;
+
+function checkInputs() {
+    let gamepad = navigator.getGamepads()[0];
+
+    let x = gamepad.axes[0];
+    let y = gamepad.axes[1];
+
+    // Check if the joystick has moved
+    if (x !== prevX || y !== prevY) {
+        sendDataToBackend(x, y);
+    }
+
+    prevX = x;
+    prevY = y;
+
+    requestAnimationFrame(checkInputs);
+}
+
+function sendDataToBackend(x, y) {
+  fetch("/control_car/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,  
+    },
+    body: JSON.stringify({ x: x, y: y }),
+  });
+}
+
+
 $(document).ready(function () {
 	// const initialData = $('[data-toggle="chart"]').data('update');
     // const $chartElement = $('#chart-sales-dark');
@@ -1160,6 +1192,8 @@ $(document).ready(function () {
 			title: "Gamepad disconnected: " + e.originalEvent.gamepad.id
 		});
 	});
+
+	checkInputs();
 
 	// setInterval(() => {
 	// 	fetchDataAndUpdateChart('#chart-sales-dark');
