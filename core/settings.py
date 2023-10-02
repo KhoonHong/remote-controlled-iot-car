@@ -129,5 +129,5 @@ STATICFILES_DIRS = (
 import firebase_admin
 from firebase_admin import credentials
 
-cred = credentials.Certificate('iot-assignment-b634b-firebase-adminsdk-iwueg-c528ad4a6e.json')
+cred = credentials.Certificate('../iot-assignment-b634b-firebase-adminsdk-iwueg-c528ad4a6e.json')
 firebase_admin.initialize_app(cred)

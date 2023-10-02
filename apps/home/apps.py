@@ -9,3 +9,12 @@ class SensorsConfig(AppConfig):
     def ready(self):
         if os.name != 'nt':
             start_reading()
+
+
+class GpsDataConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'gps_data'
+
+    def ready(self):
+        if os.name != 'nt':
+            start_reading()
