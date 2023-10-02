@@ -91,7 +91,7 @@ def control_car_view(request):
         x = data.get('x')
         y = data.get('y')
         print(x, y)
-        # control_car(x, y)
+        control_car(x, y)
 
         return JsonResponse({"status": "success"})
 

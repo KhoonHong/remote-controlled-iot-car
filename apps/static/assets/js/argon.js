@@ -1161,13 +1161,18 @@ function checkInputs() {
 }
 
 function sendDataToBackend(x, y) {
-  fetch("/control_car_view/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ x: x, y: y }),
-  });
+  // Human reaction delay (in milliseconds)
+  const HUMAN_REACTION_DELAY = 200; // for 200ms delay, adjust as needed
+
+  setTimeout(() => {
+    fetch("/control_car_view/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ x: x, y: y }),
+    });
+  }, HUMAN_REACTION_DELAY);
 }
 
 
