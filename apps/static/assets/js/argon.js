@@ -1135,13 +1135,16 @@ function fetchDataAndUpdateChart(chartElementId) {
 
 let gamepadConnected = false;
 
+let lastX = null;
+let lastY = null;
+
 function checkInputs() {
 	if (!gamepadConnected) {
         console.log('Gamepad polling stopped due to disconnection.');
         return;  // Exit the function if the gamepad is not connected
     }
 
-	let gamepads = navigator.getGamepads();
+    let gamepads = navigator.getGamepads();
 
     // Check if a gamepad is present
     if (!gamepads || !gamepads[0]) {
@@ -1152,13 +1155,21 @@ function checkInputs() {
     let x = gamepads[0].axes[0];
     let y = gamepads[0].axes[1];
 
-    console.log(x, y)
-    sendDataToBackend(x, y);
+    // Check if the current x and y values are the same as the last recorded values
+    if (x !== lastX || y !== lastY) {
+        console.log(x, y);
+        sendDataToBackend(x, y);
+
+        // Update the last known x and y values
+        lastX = x;
+        lastY = y;
+    }
 
     if (gamepadConnected) { 
         requestAnimationFrame(checkInputs);
     }
 }
+
 
 function sendDataToBackend(x, y) {
   // Human reaction delay (in milliseconds)
