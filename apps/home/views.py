@@ -17,6 +17,7 @@ import time
 from .motor import *
 from django.views.decorators.csrf import csrf_exempt
 from django.http import StreamingHttpResponse
+import json
 
 camera = Camera()
 
@@ -85,11 +86,12 @@ def get_temperature_humidity(request):
 
 @csrf_exempt
 def control_car(request):
-    x = request.POST.get('x')
-    y = request.POST.get('y')
-    print(x, y)
-    # control_car(x, y)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        x = data.get('x')
+        y = data.get('y')
+        # control_car(x, y)
 
-    return JsonResponse({"status": "success"})
+        return JsonResponse({"status": "success"})
 
 
