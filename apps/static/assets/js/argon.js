@@ -1111,6 +1111,7 @@ function vibrateController(gamepad) {
 
 $(document).ready(function () {
 	$(window).on("gamepadconnected", function (e) {
+		const gamepad = e.originalEvent.gamepad
 		Toast.fire({
 			icon: 'success',
 			title: "Gamepad connected: " + e.originalEvent.gamepad.id
