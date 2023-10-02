@@ -85,10 +85,10 @@ def get_temperature_humidity(request):
 
 @csrf_exempt
 def control_car(request):
-    x = float(request.POST.get('x'))
-    y = float(request.POST.get('y'))
-
-    control_car(x, y)
+    x = request.POST.get('x')
+    y = request.POST.get('y')
+    print(x, y)
+    # control_car(x, y)
 
     return JsonResponse({"status": "success"})
 
