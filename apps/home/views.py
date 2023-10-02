@@ -15,7 +15,7 @@ import firebase_admin
 from firebase_admin import firestore
 import time
 from .motor import *
-
+from django.views.decorators.csrf import csrf_exempt
 from django.http import StreamingHttpResponse
 
 camera = Camera()
@@ -83,7 +83,7 @@ def get_temperature_humidity(request):
     
     return JsonResponse({'temperature': temperature, 'humidity': humidity})
 
-
+@csrf_exempt
 def control_car(request):
     direction = request.POST.get('direction')
 

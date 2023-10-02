@@ -1152,13 +1152,12 @@ function checkInputs() {
 
     requestAnimationFrame(checkInputs);
 }
-let csrfToken = '{{ csrf_token }}';
+
 function sendDataToBackend(x, y) {
   fetch("/control_car/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken,  
     },
     body: JSON.stringify({ x: x, y: y }),
   });
