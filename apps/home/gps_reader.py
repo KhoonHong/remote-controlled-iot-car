@@ -34,15 +34,20 @@ def read_gps():
         while True:
             try:
                 line = ser.readline().decode('utf-8').strip()
+                print(f"Raw GPS Line: {line}")  # Print the raw line
                 if line.startswith('$GPGLL'):
                     parts = line.split(',')
-                    latitude = nmea_to_decimal(float(parts[1]), parts[2])
-                    longitude = nmea_to_decimal(float(parts[3]), parts[4])
-                    print(f"Latitude: {latitude} \t Longitude: {longitude}")
-                    store_to_firestore(latitude, longitude)
+                    if len(parts) >= 5 and parts[1] and parts[3]:  # Check if parts exist and are not empty
+                        latitude = nmea_to_decimal(float(parts[1]), parts[2])
+                        longitude = nmea_to_decimal(float(parts[3]), parts[4])
+                        print(f"Latitude: {latitude} \t Longitude: {longitude}")
+                        store_to_firestore(latitude, longitude)
+                    else:
+                        print("Received an incomplete $GPGLL string.")
             except Exception as e:
                 print(f"Error reading GPS data: {e}")
             time.sleep(10)
+
 
 def start_reading_gps():
     thread = threading.Thread(target=read_gps)
