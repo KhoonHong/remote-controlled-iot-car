@@ -1099,6 +1099,23 @@ const Toast = Swal.mixin({
 		toast.addEventListener('mouseleave', Swal.resumeTimer)
 	}
 })
+// Function to make the controller vibrate
+function vibrateController(gamepad) {
+	if (gamepad && gamepad.vibrationActuator) {
+		// Create a VibrationActuator object
+		const vibration = gamepad.vibrationActuator;
+
+		// Set the vibration parameters (strength and duration)
+		const options = {
+			duration: 200, // Vibration duration in milliseconds
+			strongMagnitude: 1.0, // Vibration strength (0.0 to 1.0)
+			weakMagnitude: 0.5, // Weaker vibration strength (0.0 to 1.0)
+		};
+
+		// Trigger the vibration
+		vibration.playEffect("dual-rumble", options);
+	}
+}
 
 $(document).ready(function () {
 	$(window).on("gamepadconnected", function (e) {
@@ -1106,6 +1123,15 @@ $(document).ready(function () {
 			icon: 'success',
 			title: "Gamepad connected: " + e.originalEvent.gamepad.id
 		});
+
+		// Inside the gamepadconnected event handler, you can set up input handling
+		const gamepad = e.originalEvent.gamepad;
+
+		// Assume gamepad.buttons[0] represents the "A" button
+		// Check for the "A" button press and vibrate the controller
+		if (gamepad.buttons[0].pressed) {
+			vibrateController(gamepad);
+		}
 	});
 
 	$(window).on("gamepaddisconnected", function (e) {
@@ -1114,32 +1140,4 @@ $(document).ready(function () {
 			title: "Gamepad disconnected: " + e.originalEvent.gamepad.id
 		});
 	});
-
-	// Function to make the controller vibrate
-	function vibrateController(gamepad) {
-		if (gamepad && gamepad.vibrationActuator) {
-			// Create a VibrationActuator object
-			const vibration = gamepad.vibrationActuator;
-
-			// Set the vibration parameters (strength and duration)
-			const options = {
-				duration: 200, // Vibration duration in milliseconds
-				strongMagnitude: 1.0, // Vibration strength (0.0 to 1.0)
-				weakMagnitude: 0.5, // Weaker vibration strength (0.0 to 1.0)
-			};
-
-			// Trigger the vibration
-			vibration.playEffect("dual-rumble", options);
-		}
-	}
-
-	// Call the vibrateController function when you want to make the controller vibrate
-	// For example, you can trigger it when a specific button is pressed
-	// For instance, you can modify the previous code to vibrate when the A button is pressed:
-	// Assume gamepad.buttons[0] represents the "A" button
-	if (gamepad.buttons[0].pressed) {
-		vibrateController(xboxController);
-	}
-
-
 });
