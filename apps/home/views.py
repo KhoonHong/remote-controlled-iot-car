@@ -13,6 +13,7 @@ from .streamer import Camera
 from django.http import JsonResponse
 import firebase_admin
 from firebase_admin import firestore
+import time
 
 from django.http import StreamingHttpResponse
 
@@ -54,6 +55,7 @@ def pages(request):
 
 
 def live_camera_feed(request):
+    time.sleep(2)
     return render(request, 'home/test.html')
 
 def camera_feed(request):
