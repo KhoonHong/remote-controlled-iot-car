@@ -54,3 +54,5 @@ def live_camera_feed(request):
 
 def camera_feed(request):
     return StreamingHttpResponse(Camera().stream(), content_type='multipart/x-mixed-replace; boundary=frame')
+
+
