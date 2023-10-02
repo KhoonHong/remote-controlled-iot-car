@@ -1135,9 +1135,21 @@ function fetchDataAndUpdateChart(chartElementId) {
 
 let prevX = null;
 let prevY = null;
+let gamepadConnected = false;
 
 function checkInputs() {
-    let gamepad = navigator.getGamepads()[0];
+	if (!gamepadConnected) {
+        console.log('Gamepad polling stopped due to disconnection.');
+        return;  // Exit the function if the gamepad is not connected
+    }
+
+    let gamepad = navigator.getGamepads();
+
+	// Check if the first gamepad is still present
+    if (!gamepads || !gamepads[0]) {
+        console.log('No gamepad connected');
+        return;
+    }
 
     let x = gamepad.axes[0];
     let y = gamepad.axes[1];
@@ -1183,6 +1195,8 @@ $(document).ready(function () {
 			icon: 'success',
 			title: "Gamepad connected: " + e.originalEvent.gamepad.id
 		});
+		gamepadConnected = true;
+		checkInputs(); 
 		vibrateController(gamepad);
 	});
 
@@ -1191,9 +1205,8 @@ $(document).ready(function () {
 			icon: 'error',
 			title: "Gamepad disconnected: " + e.originalEvent.gamepad.id
 		});
+		gamepadConnected = false;
 	});
-
-	checkInputs();
 
 	// setInterval(() => {
 	// 	fetchDataAndUpdateChart('#chart-sales-dark');
