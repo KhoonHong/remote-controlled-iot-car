@@ -72,7 +72,7 @@ def set_speed_right(speed_percentage):
     pwmB.ChangeDutyCycle(speed_percentage)
 
 def control_car(x, y):
-    if x == 0  and y == 0:  
+    if x == 0 and y == 0:  
         motor_stop()
         return
 

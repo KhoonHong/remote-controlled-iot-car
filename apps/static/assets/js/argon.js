@@ -1133,8 +1133,6 @@ function fetchDataAndUpdateChart(chartElementId) {
         });
 }
 
-let prevX = null;
-let prevY = null;
 let gamepadConnected = false;
 
 function checkInputs() {
@@ -1154,14 +1152,8 @@ function checkInputs() {
     let x = gamepads[0].axes[0];
     let y = gamepads[0].axes[1];
 
-    // Check if the joystick has moved
-    if (x !== prevX || y !== prevY) {
-		console.log(x, y)
-        sendDataToBackend(x, y);
-    }
-
-    prevX = x;
-    prevY = y;
+    console.log(x, y)
+    sendDataToBackend(x, y);
 
     if (gamepadConnected) { 
         requestAnimationFrame(checkInputs);
