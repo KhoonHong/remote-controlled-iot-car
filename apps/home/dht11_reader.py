@@ -31,7 +31,7 @@ def store_to_firestore(temperature, humidity):
 
 def read_dht11():
     while True:
-        humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
+        humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
         if humidity is not None and temperature is not None:
             print(f"Temp={temperature:0.1f}*C  Humidity={humidity:0.1f}%")
             store_to_firestore(temperature, humidity)

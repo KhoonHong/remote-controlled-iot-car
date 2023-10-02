@@ -2,11 +2,12 @@ import time
 import threading
 import serial
 import firebase_admin
+import pynmea2
 from firebase_admin import firestore
 
-# Setup UART communication parameters for GY-NEO6MV2 GPS module
-SERIAL_PORT = "/dev/serial0"  # Change if using a different UART port
-BAUD_RATE = 9600
+port = "/dev/ttyAMA0"
+ser = serial.Serial(port, baudrate=9600, timeout=1)
+dataout = pynmea2.NMEAStreamReader()
 
 def store_to_firestore(latitude, longitude):
     try:
@@ -20,34 +21,21 @@ def store_to_firestore(latitude, longitude):
     except Exception as e:
         print(f"Error saving to Firestore: {e}")
 
-def nmea_to_decimal(coord, direction):
-    # Converts NMEA format to decimal format
-    degrees = int(coord) // 100
-    minutes = coord - 100*degrees
-    decimals = degrees + minutes/60.0
-    if direction in ['S', 'W']:
-        decimals = -decimals
-    return decimals
-
 def read_gps():
-    with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1) as ser:
-        while True:
+    while True:  # Add a continuous loop to read data
+        newdata = ser.readline()
+        if '$GPRMC' in str(newdata):
             try:
-                line = ser.readline().decode('utf-8').strip()
-                print(f"Raw GPS Line: {line}")  # Print the raw line
-                if line.startswith('$GPGLL'):
-                    parts = line.split(',')
-                    if len(parts) >= 5 and parts[1] and parts[3]:  # Check if parts exist and are not empty
-                        latitude = nmea_to_decimal(float(parts[1]), parts[2])
-                        longitude = nmea_to_decimal(float(parts[3]), parts[4])
-                        print(f"Latitude: {latitude} \t Longitude: {longitude}")
-                        store_to_firestore(latitude, longitude)
-                    else:
-                        print("Received an incomplete $GPGLL string.")
-            except Exception as e:
-                print(f"Error reading GPS data: {e}")
-            time.sleep(10)
-
+                newmsg = pynmea2.parse(newdata.decode('utf-8'))
+                if newmsg.is_valid:  # Check if GPS data is valid
+                    lat = newmsg.latitude
+                    lng = newmsg.longitude
+                    gps = f"Latitude = {lat} and Longitude = {lng}"
+                    print(gps)
+                    store_to_firestore(lat, lng)  # Store data to Firestore
+            except pynmea2.nmea.ParseError:
+                print("Error parsing NMEA sentence.")
+        time.sleep(10)  # Consider reducing or removing this sleep depending on your needs
 
 def start_reading_gps():
     thread = threading.Thread(target=read_gps)
