@@ -35,15 +35,14 @@ def set_speed(speed_percentage):
     pwmA.ChangeDutyCycle(speed_percentage)
     pwmB.ChangeDutyCycle(speed_percentage)
 
-# Motor functions
 def motor_forward():
     #Left motor
-    GPIO.output(IN1, True)
-    GPIO.output(IN2, False)
+    GPIO.output(IN1, False)
+    GPIO.output(IN2, True)  
     
     #Right motor
-    GPIO.output(IN3, True)
-    GPIO.output(IN4, False)
+    GPIO.output(IN3, False)  
+    GPIO.output(IN4, True)  
     
     #Main motor
     GPIO.output(ENA, True)
@@ -51,14 +50,15 @@ def motor_forward():
 
 def motor_backward():
     
-    GPIO.output(IN1, False)
-    GPIO.output(IN2, True)
+    GPIO.output(IN1, True)   
+    GPIO.output(IN2, False)  
     
-    GPIO.output(IN3, False)
-    GPIO.output(IN4, True)
+    GPIO.output(IN3, True)   
+    GPIO.output(IN4, False)  
     
     GPIO.output(ENA, True)
     GPIO.output(ENB, True)
+
 
 def motor_stop():
     GPIO.output(ENA, False)
@@ -77,29 +77,28 @@ def control_car(x, y):
         angle += 360
     distance = min(math.sqrt(x**2 + y**2), 1)
     speed = int(distance * 100)
+    
     print(f"Angle: {angle}, Speed: {speed}")
     print(f"Distance: {distance}, Speed: {speed}")
+
+    # Define the motor action for each direction range:
     thresholds = [
-        (67.5, lambda: (speed, int(speed * 0.5)), motor_forward),
-        (112.5, lambda: (speed, 0), motor_forward),
-        (157.5, lambda: (int(speed * 0.5), speed), motor_forward),
-        (202.5, lambda: (0, speed), motor_forward),
-        (247.5, lambda: (int(speed * 0.5), speed), motor_backward),
-        (292.5, lambda: (speed, 0), motor_backward),
-        (337.5, lambda: (speed, int(speed * 0.5)), motor_backward)
+        (22.5, motor_stop),  # stop for slight nudges
+        (67.5, lambda: (motor_forward(), set_speed_left(speed), set_speed_right(int(speed * 0.5)))),
+        (112.5, lambda: (motor_forward(), set_speed_left(speed), set_speed_right(0))),
+        (157.5, lambda: (motor_forward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),
+        (202.5, lambda: (motor_forward(), set_speed_left(0), set_speed_right(speed))),
+        (247.5, lambda: (motor_backward(), set_speed_left(0), set_speed_right(speed))),
+        (292.5, lambda: (motor_backward(), set_speed_left(int(speed * 0.5)), set_speed_right(speed))),
+        (337.5, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(0))),
+        (360, lambda: (motor_backward(), set_speed_left(speed), set_speed_right(int(speed * 0.5))))
     ]
 
-    for threshold, config, direction in thresholds:
+    for threshold, action in thresholds:
         if angle < threshold:
-            speed_left, speed_right = config()
-            set_speed_left(speed_left)
-            set_speed_right(speed_right)
-            direction()
+            action()
             break
-    else:
-        set_speed_left(speed)
-        set_speed_right(speed)
-        motor_forward()
+
 
 def cleanup():
     # Stops the motors
