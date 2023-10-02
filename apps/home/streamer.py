@@ -63,9 +63,18 @@ class Camera:
 
     def pi_camera_start_recording(self):
         import picamera
-        self.camera = picamera.PiCamera()
-        self.camera.start_recording(self.recording_path)
-        self.is_recording = True
+
+        # Check if camera is already initialized
+        if hasattr(self, 'camera'):
+            self.pi_camera_stop_recording()
+
+        try:
+            self.camera = picamera.PiCamera(resolution=(640, 480), framerate=24)
+            self.camera.start_recording(self.recording_path)
+            self.is_recording = True
+        except picamera.PiCameraError as e:
+            print(f"Error starting recording: {e}")
+
 
     def pi_camera_stop_recording(self):
         self.camera.stop_recording()
