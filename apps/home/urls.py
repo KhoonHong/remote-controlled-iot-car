@@ -9,6 +9,7 @@ from .views import camera_feed, live_camera_feed
 
 urlpatterns = [
     path('camera/', camera_feed, name='camera_feed'),
+    path('get_temperature_humidity/', views.get_temperature_humidity, name='get_temperature_humidity'),
     path('live_camera_feed/', live_camera_feed, name='live_camera_feed'),
     path('', views.index, name='home'),
 

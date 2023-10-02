@@ -1114,7 +1114,33 @@ function vibrateController(gamepad) {
 	});
 }
 
+function fetchDataAndUpdateChart(chartElementId) {
+    fetch('/get_temperature_humidity/')
+        .then(response => response.json())
+        .then(data => {
+            const temperatureData = data.temperature;
+            const humidityData = data.humidity;
+
+            const $chartElement = $('#chart-sales-dark');
+            const $chart = $chartElement.data('chart');
+            $chart.data.datasets[0].data = temperatureData;  // Assuming temperature is the first dataset
+            $chart.data.datasets[1].data = humidityData;    // Assuming humidity is the second dataset
+            $chart.update();
+        });
+}
+
 $(document).ready(function () {
+	const initialData = $('[data-toggle="chart"]').data('update');
+    const $chartElement = $('#chart-sales-dark');
+    const ctx = $chartElement[0].getContext('2d');
+
+	// Initialize the Chart.js chart
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: initialData.data,
+        // Add other chart options if needed
+    });
+
 	$(window).on("gamepadconnected", function (e) {
 		const gamepad = e.originalEvent.gamepad
 		Toast.fire({
@@ -1130,4 +1156,8 @@ $(document).ready(function () {
 			title: "Gamepad disconnected: " + e.originalEvent.gamepad.id
 		});
 	});
+
+	setInterval(() => {
+		fetchDataAndUpdateChart('#chart-sales-dark');
+	}, 10000);  // 10000 milliseconds = 10 seconds
 });
