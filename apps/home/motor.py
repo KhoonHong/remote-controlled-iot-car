@@ -54,8 +54,8 @@ def motor_backward():
     GPIO.output(IN1, False)
     GPIO.output(IN2, True)
     
-    GPIO.output(IN3, True)
-    GPIO.output(IN4, False)
+    GPIO.output(IN3, False)
+    GPIO.output(IN4, True)
     
     GPIO.output(ENA, True)
     GPIO.output(ENB, True)
