@@ -1137,14 +1137,22 @@ let prevX = null;
 let prevY = null;
 let gamepadConnected = false;
 
-function checkInputs(gamepad) {
+function checkInputs() {
 	if (!gamepadConnected) {
         console.log('Gamepad polling stopped due to disconnection.');
         return;  // Exit the function if the gamepad is not connected
     }
 
-    let x = gamepad.axes[0];
-    let y = gamepad.axes[1];
+	let gamepads = navigator.getGamepads();
+
+    // Check if a gamepad is present
+    if (!gamepads || !gamepads[0]) {
+        console.log('No gamepad connected');
+        return;
+    }
+
+    let x = gamepads[0].axes[0];
+    let y = gamepads[0].axes[1];
 
     // Check if the joystick has moved
     if (x !== prevX || y !== prevY) {
@@ -1155,7 +1163,9 @@ function checkInputs(gamepad) {
     prevX = x;
     prevY = y;
 
-    requestAnimationFrame(checkInputs);
+    if (gamepadConnected) { 
+        requestAnimationFrame(checkInputs);
+    }
 }
 
 function sendDataToBackend(x, y) {
@@ -1188,7 +1198,7 @@ $(document).ready(function () {
 			title: "Gamepad connected: " + e.originalEvent.gamepad.id
 		});
 		gamepadConnected = true;
-		checkInputs(gamepad); 
+		checkInputs(); 
 		vibrateController(gamepad);
 	});
 
