@@ -1101,20 +1101,12 @@ const Toast = Swal.mixin({
 })
 // Function to make the controller vibrate
 function vibrateController(gamepad) {
-	if (gamepad && gamepad.vibrationActuator) {
-		// Create a VibrationActuator object
-		const vibration = gamepad.vibrationActuator;
-
-		// Set the vibration parameters (strength and duration)
-		const options = {
-			duration: 200, // Vibration duration in milliseconds
-			strongMagnitude: 1.0, // Vibration strength (0.0 to 1.0)
-			weakMagnitude: 0.5, // Weaker vibration strength (0.0 to 1.0)
-		};
-
-		// Trigger the vibration
-		vibration.playEffect("dual-rumble", options);
-	}
+	gamepad.vibrationActuator.playEffect('dual-rumble', {
+		startDelay: 0, // Add a delay in milliseconds
+		duration: 1000, // Total duration in milliseconds
+		weakMagnitude: 0.5, // intensity (0-1) of the small ERM 
+		strongMagnitude: 1 // intesity (0-1) of the bigger ERM
+	  });
 }
 
 $(document).ready(function () {
