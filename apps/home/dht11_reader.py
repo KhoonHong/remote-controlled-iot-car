@@ -1,10 +1,8 @@
 import time
 import threading
+from firebase_admin import firestore
 import os
-import requests
 
-# Firebase Configuration
-FIREBASE_URL = "https://iot-assignment-b634b.firebaseio.com/"
 
 # Check if we're on a development environment (e.g., Windows)
 IS_DEV = os.name == 'nt'  # 'nt' is the name for the Windows platform in Python
@@ -16,19 +14,18 @@ else:
     # Import the real module
     import Adafruit_DHT
 
+
 DHT_SENSOR = Adafruit_DHT.DHT11
 DHT_PIN = 4  # Assuming DHT11 is connected to GPIO4, change as needed
 
 def store_to_firestore(temperature, humidity):
-    endpoint = f"{FIREBASE_URL}/dht11_data.json"
-    data = {
+    db = firestore.client()
+    doc_ref = db.collection('dht11_data').document()
+    doc_ref.set({
         'temperature': temperature,
         'humidity': humidity,
-        'timestamp': {'.sv': 'timestamp'}  # Firebase server timestamp directive
-    }
-    response = requests.post(endpoint, json=data)
-    if response.status_code != 200:
-        print(f"Error storing data: {response.text}")
+        'timestamp': firestore.SERVER_TIMESTAMP
+    })
 
 def read_dht11():
     while True:
