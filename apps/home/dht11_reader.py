@@ -1,7 +1,7 @@
 import time
 import threading
-from firebase_admin import firestore
 import os
+import firebase_admin
 
 
 # Check if we're on a development environment (e.g., Windows)
@@ -19,7 +19,7 @@ DHT_SENSOR = Adafruit_DHT.DHT11
 DHT_PIN = 4  # Assuming DHT11 is connected to GPIO4, change as needed
 
 def store_to_firestore(temperature, humidity):
-    db = firestore.client()
+    db = firebase_admin.firestore.client()
     doc_ref = db.collection('dht11_data').document()
     doc_ref.set({
         'temperature': temperature,

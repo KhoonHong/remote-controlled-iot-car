@@ -1,14 +1,14 @@
 import time
 import threading
 import serial
-from firebase_admin import firestore
+import firebase_admin
 
 # Setup UART communication parameters for GY-NEO6MV2 GPS module
 SERIAL_PORT = "/dev/serial0"  # Change if using a different UART port
 BAUD_RATE = 9600
 
 def store_to_firestore(latitude, longitude):
-    db = firestore.client()
+    db = firebase_admin.firestore.client()
     doc_ref = db.collection('gps_data').document()
     doc_ref.set({
         'latitude': latitude,
