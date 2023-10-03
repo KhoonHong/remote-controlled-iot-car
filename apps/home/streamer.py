@@ -89,3 +89,32 @@ class Camera:
     def opencv_stop_recording(self):
         self.out.release()
         self.cap.release()
+
+
+    def take_screenshot(self, save_path="screenshot.jpg"):
+        self.init_camera()
+
+        try:
+            return self.pi_camera_screenshot(save_path)
+        except AttributeError:
+            import cv2
+            return self.opencv_screenshot(save_path)
+
+    def pi_camera_screenshot(self, save_path):
+        """
+        Capture a screenshot using PiCamera.
+        """
+        self.camera.capture(save_path, format='jpeg', quality=70)
+        return save_path
+
+    def opencv_screenshot(self, save_path):
+        """
+        Capture a screenshot using OpenCV.
+        """
+        import cv2
+        cap = cv2.VideoCapture(0)
+        ret, frame = cap.read()
+        if ret:
+            cv2.imwrite(save_path, frame)
+        cap.release()
+        return save_path

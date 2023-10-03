@@ -1231,7 +1231,7 @@ $(document).ready(function () {
 				console.log(data.status);
 				Toast.fire({
 					icon: 'success',
-					title: "Recording Started: " + data.status
+					title: "Recording Started"
 				});
 			}
 		});
@@ -1244,7 +1244,20 @@ $(document).ready(function () {
 			success: function(data) {
 				Toast.fire({
 					icon: 'success',
-					title: "Recording Stopped: " + data.status
+					title: "Recording Stopped"
+				});
+			}
+		});
+	});
+
+	$("#snapBtn").click(function(){
+		$.ajax({
+			url: '/take_screenshot/',
+			method: 'GET',
+			success: function(data) {
+				Toast.fire({
+					icon: 'success',
+					title: "Snapshot taken: " + data.status
 				});
 			}
 		});

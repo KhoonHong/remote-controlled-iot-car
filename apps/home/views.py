@@ -94,5 +94,10 @@ def control_car_view(request):
         control_car(x, y)
 
         return JsonResponse({"status": "success"})
+    
+def take_screenshot(request):
+    screenshot_path = camera.take_screenshot("my_screenshot.jpg")
+    print(f"Screenshot saved to {screenshot_path}")
+    return JsonResponse({'status': 'screenshot taken'})
 
 
