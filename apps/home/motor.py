@@ -1,47 +1,58 @@
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except ImportError:
+    GPIO = None  # Set GPIO to None on non-Raspberry Pi systems
+
 import time
 import math
 import atexit
 
-# Pin definitions
-IN1, IN2, IN3, IN4, ENA, ENB = 17, 18, 22, 23, 21, 24
+if GPIO is not None:
+    # Pin definitions
+    IN1, IN2, IN3, IN4, ENA, ENB = 17, 18, 22, 23, 21, 24
 
-# Suppress GPIO warnings
-GPIO.setwarnings(False)
+    # Suppress GPIO warnings
+    GPIO.setwarnings(False)
 
-# Set up RPi.GPIO settings
-GPIO.setmode(GPIO.BCM)
-GPIO.setup([IN1, IN2, IN3, IN4, ENA, ENB], GPIO.OUT)
+    # Set up RPi.GPIO settings
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup([IN1, IN2, IN3, IN4, ENA, ENB], GPIO.OUT)
 
-# Initialization
-pwmA, pwmB = GPIO.PWM(ENA, 100), GPIO.PWM(ENB, 100)
-pwmA.start(0)
-pwmB.start(0)
+    # Initialization
+    pwmA, pwmB = GPIO.PWM(ENA, 100), GPIO.PWM(ENB, 100)
+    pwmA.start(0)
+    pwmB.start(0)
 
 def set_speed(speed_percentage):
-    pwmA.ChangeDutyCycle(speed_percentage)
-    pwmB.ChangeDutyCycle(speed_percentage)
+    if GPIO is not None:
+        pwmA.ChangeDutyCycle(speed_percentage)
+        pwmB.ChangeDutyCycle(speed_percentage)
 
 def motor_forward():
-    GPIO.output([IN1, IN3], False)
-    GPIO.output([IN2, IN4, ENA, ENB], True)
+    if GPIO is not None:
+        GPIO.output([IN1, IN3], False)
+        GPIO.output([IN2, IN4, ENA, ENB], True)
 
 def motor_backward():
-    GPIO.output([IN1, IN3, ENA, ENB], True)
-    GPIO.output([IN2, IN4], False)
+    if GPIO is not None:
+        GPIO.output([IN1, IN3, ENA, ENB], True)
+        GPIO.output([IN2, IN4], False)
 
 def motor_stop():
-    GPIO.output(IN1, False)
-    GPIO.output(IN2, False)
-    GPIO.output(IN3, False)
-    GPIO.output(IN4, False)
-    GPIO.output([ENA, ENB], False)
+    if GPIO is not None:
+        GPIO.output(IN1, False)
+        GPIO.output(IN2, False)
+        GPIO.output(IN3, False)
+        GPIO.output(IN4, False)
+        GPIO.output([ENA, ENB], False)
 
 def set_speed_left(speed_percentage):
-    pwmA.ChangeDutyCycle(speed_percentage)
+    if GPIO is not None:
+        pwmA.ChangeDutyCycle(speed_percentage)
 
 def set_speed_right(speed_percentage):
-    pwmB.ChangeDutyCycle(speed_percentage)
+    if GPIO is not None:
+        pwmB.ChangeDutyCycle(speed_percentage)
 
 def control_car(x, y):
     NEAR_CENTER_THRESHOLD = 0.0005  # This threshold can be adjusted based on the sensitivity of the joystick.
@@ -89,10 +100,10 @@ def control_car(x, y):
         set_speed_right(speed * (1 - (angle - 270)/90))
         return
 
-
 def cleanup():
     motor_stop()
-    GPIO.cleanup()
+    if GPIO is not None:
+        GPIO.cleanup()
 
 # Handle cleanup when the script ends
 atexit.register(cleanup)
