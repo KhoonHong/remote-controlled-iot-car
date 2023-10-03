@@ -17639,3 +17639,20 @@ input.datetimepicker[data-color="yellow"] + .bootstrap-datetimepicker-widget {
 .colored-toast .swal2-html-container {
   color: white;
 }
+
+
+.map-card {
+  position: relative;
+}
+
+.map-canvas {
+  height: 600px;
+}
+
+.latlong-display {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255,255,255,0.7);
+  padding: 10px 20px;
+}

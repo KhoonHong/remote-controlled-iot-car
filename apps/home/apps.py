@@ -20,16 +20,16 @@ class SensorsConfig(AppConfig):
     name = 'apps.home'
 
     def ready(self):
-        # if is_raspberrypi():
-        #     try:
-        #         log.info("Starting DHT11 reader...")
-        #         start_reading_dht11()
-        #     except Exception as e:
-        #         log.error(f"Error starting DHT11 reader: {e}")
+        if is_raspberrypi():
+            try:
+                log.info("Starting DHT11 reader...")
+                start_reading_dht11()
+            except Exception as e:
+                log.error(f"Error starting DHT11 reader: {e}")
 
-        #     try:
-        #         log.info("Starting GPS reader...")
-        #         start_reading_gps()
-        #     except Exception as e:
-        #         log.error(f"Error starting GPS reader: {e}")
-        pass # due to firestore limit exceeded
+            try:
+                log.info("Starting GPS reader...")
+                start_reading_gps()
+            except Exception as e:
+                log.error(f"Error starting GPS reader: {e}")
+        # pass # due to firestore limit exceeded

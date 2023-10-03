@@ -103,3 +103,21 @@ def take_screenshot(request):
 
 def display_oled_view(request):
     return render(request, 'home/display.html')
+
+
+def get_gps_coordinates(request):
+    # Your logic to get the latitude and longitude goes here.
+    # For demonstration purposes, let's use dummy values:
+    latitude = 40.748817
+    longitude = -73.985428
+    return JsonResponse({'lat': latitude, 'lng': longitude})
+
+
+def get_gps_coordinates_from_firestore():
+    db = firestore.client()
+    doc_ref = db.collection('gps_data').document()
+    doc = doc_ref.get()
+    if doc.exists:
+        return doc.to_dict()  # This returns a dictionary with all the fields of the document.
+    else:
+        return None

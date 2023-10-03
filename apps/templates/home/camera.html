@@ -41,8 +41,6 @@
 </div>
 
 
-
-
 {% include "includes/footer.html" %}
 
 </div>
@@ -52,21 +50,21 @@
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
 <script>
-const ToastCamera = Swal.mixin({
-	toast: true,
-	position: 'top-end',
-	showConfirmButton: false,
-	timer: 3000,
-	timerProgressBar: true,
-	iconColor: 'white',
-	customClass: {
-		popup: 'colored-toast'
-	  },
-	didOpen: (toast) => {
-		toast.addEventListener('mouseenter', Swal.stopTimer)
-		toast.addEventListener('mouseleave', Swal.resumeTimer)
-	}
-})
+  const ToastCamera = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast'
+    },
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
 
 
   function checkForCamera() {
@@ -95,6 +93,11 @@ const ToastCamera = Swal.mixin({
   checkForCamera()
     .then(hasCamera => {
       if (hasCamera) {
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+          const cameras = devices.filter(device => device.kind === 'videoinput');
+          console.log(cameras);
+        });
+
         console.log("Camera detected!");
         ToastCamera.fire({
           icon: 'success',
@@ -115,4 +118,3 @@ const ToastCamera = Swal.mixin({
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTTfWur0PDbZWPr7Pmq8K3jiDp0_xUziI"></script>
 {% endblock javascripts %}
-
