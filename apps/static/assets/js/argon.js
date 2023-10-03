@@ -1257,7 +1257,7 @@ $(document).ready(function () {
 			success: function(data) {
 				Toast.fire({
 					icon: 'success',
-					title: "Snapshot taken: " + data.status
+					title: "Snapshot taken"
 				});
 			}
 		});

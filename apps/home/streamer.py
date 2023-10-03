@@ -9,8 +9,12 @@ class Camera:
 
     def init_camera(self):
         if self.camera is None:
-            import picamera
-            self.camera = picamera.PiCamera(resolution=(640, 480), framerate=24)
+            try:
+                import picamera
+                self.camera = picamera.PiCamera(resolution=(640, 480), framerate=24)
+            except ImportError:
+                import cv2
+                self.camera = cv2.VideoCapture(0)
 
     def stream(self):
         self.init_camera()

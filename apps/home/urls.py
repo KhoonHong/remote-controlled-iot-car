@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from django.urls import path, re_path
 from apps.home import views
-from .views import camera_feed, live_camera_feed
+from .views import camera_feed, live_camera_feed, display_oled_view
 
 urlpatterns = [
     path('camera/', camera_feed, name='camera_feed'),
@@ -15,6 +15,7 @@ urlpatterns = [
     path('take_screenshot/', views.take_screenshot, name='take_screenshot'),
     path('control_car_view/', views.control_car_view, name='control_car_view'),
     path('live_camera_feed/', live_camera_feed, name='live_camera_feed'),
+    path('display_oled/', views.display_oled_view, name='display_oled'),
     path('', views.index, name='home'),
 
     # Matches any html file - keep this at the end

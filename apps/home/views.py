@@ -58,7 +58,7 @@ def pages(request):
 
 def live_camera_feed(request):
     time.sleep(2)
-    return render(request, 'home/test.html')
+    return render(request, 'home/camera.html')
 
 def camera_feed(request):
     return StreamingHttpResponse(camera.stream(), content_type='multipart/x-mixed-replace; boundary=frame')
@@ -101,3 +101,5 @@ def take_screenshot(request):
     return JsonResponse({'status': 'screenshot taken'})
 
 
+def display_oled_view(request):
+    return render(request, 'home/display.html')
