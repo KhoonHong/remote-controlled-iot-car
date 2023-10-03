@@ -1,0 +1,268 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Tables {% endblock title %}
+
+{% block content %}
+
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">OLED Display</h6>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              <li class="breadcrumb-item"><a href="#">Display</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Message</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <!-- Dark table -->
+  <div class="row">
+    <div class="col">
+      <div class="card bg-default shadow">
+        <div class="card-header bg-transparent border-0">
+          <h3 class="text-white mb-0">Set OLED Message</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-dark table-flush">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" class="sort" data-sort="name">Data</th>
+                <th scope="col" class="sort" data-sort="selection">Option</th>
+                <th scope="col" class="sort" data-sort="status">Status</th>
+                <th scope="col" class="sort" data-sort="remarks">Remarks</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              <tr>
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <a href="#" class="avatar rounded-circle mr-3">
+                      <i class="fa fa-thermometer-half"></i>
+                    </a>
+                    <div class="media-body">
+                      <span class="name mb-0 text-sm">Temperature Data</span>
+                    </div>
+                  </div>
+                </th>
+                <td class="selection">
+                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
+                </td>
+                <td>
+                  <span class="badge badge-dot mr-4">
+                    <i class="bg-warning"></i>
+                    <span class="status">Starting</span>
+                  </span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <span class="remarks">Display Sensor Data Here</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="dropdown">
+                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <a href="#" class="avatar rounded-circle mr-3">
+                      <i class="fa fa-tint"></i>
+                    </a>
+                    <div class="media-body">
+                      <span class="name mb-0 text-sm">Humidity Data</span>
+                    </div>
+                  </div>
+                </th>
+                <td class="selection">
+                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
+                </td>
+                <td>
+                  <span class="badge badge-dot mr-4">
+                    <i class="bg-success"></i>
+                    <span class="status">Active</span>
+                  </span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <span class="remarks">Display Sensor Data Here</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="dropdown">
+                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <a href="#" class="avatar rounded-circle mr-3">
+                      <i class="fa fa-rss"></i>
+                    </a>
+                    <div class="media-body">
+                      <span class="name mb-0 text-sm">Proximity Data</span>
+                    </div>
+                  </div>
+                </th>
+                <td class="selection">
+                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
+                </td>
+                <td>
+                  <span class="badge badge-dot mr-4">
+                    <i class="bg-danger"></i>
+                    <span class="status">Inactive</span>
+                  </span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <span class="remarks">Display Sensor Data Here</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="dropdown">
+                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <a href="#" class="avatar rounded-circle mr-3">
+                      <i class="fa fa-map-marker"></i>
+                    </a>
+                    <div class="media-body">
+                      <span class="name mb-0 text-sm">Location Data</span>
+                    </div>
+                  </div>
+                </th>
+                <td class="selection">
+                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
+                </td>
+                <td>
+                  <span class="badge badge-dot mr-4">
+                    <i class="bg-success"></i>
+                    <span class="status">Active</span>
+                  </span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <span class="remarks">Display Sensor Data Here</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="dropdown">
+                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <div class="media align-items-center">
+                    <a href="#" class="avatar rounded-circle mr-3">
+                      <i class="fa fa-cogs"></i>
+                    </a>
+                    <div class="media-body">
+                      <span class="name mb-0 text-sm">Motor Status</span>
+                    </div>
+                  </div>
+                </th>
+                <td class="selection">
+                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
+                </td>
+                <td>
+                  <span class="badge badge-dot mr-4">
+                    <i class="bg-success"></i>
+                    <span class="status">Active</span>
+                  </span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <span class="remarks">Display Sensor Data Here</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="dropdown">
+                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include "includes/footer.html" %}
+
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let checkboxes = document.querySelectorAll('.single-checkbox');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    checkboxes.forEach(function(innerCheckbox) {
+                        if (innerCheckbox !== checkbox) {
+                            innerCheckbox.checked = false;
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock javascripts %}
