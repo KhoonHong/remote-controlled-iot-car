@@ -26,6 +26,123 @@ import RPi.GPIO as GPIO
 
 camera = Camera()
 
+# Music notes and their corresponding frequencies
+NOTE_C4 = 262
+NOTE_D4 = 294
+NOTE_E4 = 330
+NOTE_F4 = 349
+NOTE_G4 = 392
+NOTE_A4 = 440
+NOTE_B4 = 494
+NOTE_C5 = 523
+NOTE_D5 = 587
+NOTE_E5 = 659
+NOTE_F5 = 698
+NOTE_G5 = 784
+NOTE_A5 = 880
+NOTE_B5 = 988
+
+notes = [NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
+    NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
+    NOTE_C5, NOTE_D5, NOTE_B4, NOTE_B4, 0,
+    NOTE_A4, NOTE_G4, NOTE_A4, 0,
+
+    NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
+    NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
+    NOTE_C5, NOTE_D5, NOTE_B4, NOTE_B4, 0,
+    NOTE_A4, NOTE_G4, NOTE_A4, 0,
+
+    NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
+    NOTE_A4, NOTE_C5, NOTE_D5, NOTE_D5, 0,
+    NOTE_D5, NOTE_E5, NOTE_F5, NOTE_F5, 0,
+    NOTE_E5, NOTE_D5, NOTE_E5, NOTE_A4, 0,
+
+    NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
+    NOTE_D5, NOTE_E5, NOTE_A4, 0,
+    NOTE_A4, NOTE_C5, NOTE_B4, NOTE_B4, 0,
+    NOTE_C5, NOTE_A4, NOTE_B4, 0,
+
+    NOTE_A4, NOTE_A4,
+
+    NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
+    NOTE_C5, NOTE_D5, NOTE_B4, NOTE_B4, 0,
+    NOTE_A4, NOTE_G4, NOTE_A4, 0,
+
+    NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
+    NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
+    NOTE_C5, NOTE_D5, NOTE_B4, NOTE_B4, 0,
+    NOTE_A4, NOTE_G4, NOTE_A4, 0,
+
+    NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
+    NOTE_A4, NOTE_C5, NOTE_D5, NOTE_D5, 0,
+    NOTE_D5, NOTE_E5, NOTE_F5, NOTE_F5, 0,
+    NOTE_E5, NOTE_D5, NOTE_E5, NOTE_A4, 0,
+
+    NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
+    NOTE_D5, NOTE_E5, NOTE_A4, 0,
+    NOTE_A4, NOTE_C5, NOTE_B4, NOTE_B4, 0,
+    NOTE_C5, NOTE_A4, NOTE_B4, 0,
+
+    NOTE_E5, 0, 0, NOTE_F5, 0, 0,
+    NOTE_E5, NOTE_E5, 0, NOTE_G5, 0, NOTE_E5, NOTE_D5, 0, 0,
+    NOTE_D5, 0, 0, NOTE_C5, 0, 0,
+    NOTE_B4, NOTE_C5, 0, NOTE_B4, 0, NOTE_A4,
+
+    NOTE_E5, 0, 0, NOTE_F5, 0, 0,
+    NOTE_E5, NOTE_E5, 0, NOTE_G5, 0, NOTE_E5, NOTE_D5, 0, 0,
+    NOTE_D5, 0, 0, NOTE_C5, 0, 0,
+    NOTE_B4, NOTE_C5, 0, NOTE_B4, 0, NOTE_A4]  # trimmed for brevity
+durations = [125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 375, 125,
+
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 375, 125,
+
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 125, 250, 125,
+
+    125, 125, 250, 125, 125,
+    250, 125, 250, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 375, 375,
+
+    250, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 375, 125,
+
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 375, 125,
+
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 125, 250, 125,
+
+    125, 125, 250, 125, 125,
+    250, 125, 250, 125,
+    125, 125, 250, 125, 125,
+    125, 125, 375, 375,
+
+    250, 125, 375, 250, 125, 375,
+    125, 125, 125, 125, 125, 125, 125, 125, 375,
+    250, 125, 375, 250, 125, 375,
+    125, 125, 125, 125, 125, 500,
+
+    250, 125, 375, 250, 125, 375,
+    125, 125, 125, 125, 125, 125, 125, 125, 375,
+    250, 125, 375, 250, 125, 375,
+    125, 125, 125, 125, 125, 500]  # trimmed for brevity
+
+songSpeed = 1.0 
 
 @login_required(login_url="/login/")
 def index(request):
@@ -326,3 +443,46 @@ def light_led(request):
         GPIO.cleanup()
     
     return JsonResponse({'status': 'success', 'message': 'LED toggled'})
+
+# Global variable to control buzzer state
+buzzer_playing = True
+
+def activate_buzzer(request):
+    global buzzer_playing
+    
+    status = request.GET.get('status')
+    BUZZER_PIN = 19
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(BUZZER_PIN, GPIO.OUT)
+    pwmBuzzer = GPIO.PWM(BUZZER_PIN, 1)
+    pwmBuzzer.start(0)
+
+    if status == 'on':
+        buzzer_playing = True
+        try:
+            play_song(pwmBuzzer)
+        finally:
+            pwmBuzzer.stop()
+            GPIO.cleanup()
+    else:
+        buzzer_playing = False
+        pwmBuzzer.stop()
+        GPIO.cleanup()
+
+    return JsonResponse({'status': 'success', 'message': 'Buzzer toggled'})
+
+
+def play_tone(pwmBuzzer, frequency, duration):
+    if frequency == 0:  # A rest note
+        pwmBuzzer.ChangeDutyCycle(0)
+    else:
+        pwmBuzzer.ChangeFrequency(frequency)
+        pwmBuzzer.ChangeDutyCycle(50)  # 50% duty cycle to sound the buzzer
+
+    time.sleep(duration * songSpeed / 1000.0)  # Convert duration from ms to s
+    pwmBuzzer.ChangeDutyCycle(0)  # Silence the buzzer
+    time.sleep(0.05)  # A short delay between notes
+
+def play_song():
+    for i in range(len(notes)):
+        play_tone(notes[i], durations[i])

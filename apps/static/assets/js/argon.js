@@ -1172,37 +1172,41 @@ $(document).ready(function () {
 	});
 
 	function updateGamepad() {
-		// Retrieve the state of the gamepad
-		gamepad = navigator.getGamepads()[0];
-	
+		let gamepad = navigator.getGamepads()[0];
+
 		// Check if the "A" button is pressed (button index 0)
 		if (gamepad.buttons[0].pressed && !aButtonPressed) {
 			aButtonPressed = true;
-			console.log("A button pressed");
 			// Trigger LED on
-			$.ajax({
-				url: '/light_led/',
-				method: 'GET',
-				headers: { "X-CSRFToken": csrfToken },
-				data: { 'status': 'on' },
-				success: function (data) {
-					console.log(data.status);
-				}
-			});
+			triggerAction('on', 'light_led');
 		} else if (!gamepad.buttons[0].pressed && aButtonPressed) {
 			aButtonPressed = false;
-			console.log("A button released");
 			// Trigger LED off
-			$.ajax({
-				url: '/light_led/',
-				method: 'GET',
-				headers: { "X-CSRFToken": csrfToken },
-				data: { 'status': 'off' },
-				success: function (data) {
-					console.log(data.status);
-				}
-			});
+			triggerAction('off', 'light_led');
 		}
+
+		// Check if the "B" button is pressed (button index 1)
+		if (gamepad.buttons[1].pressed && !bButtonPressed) {
+			bButtonPressed = true;
+			// Trigger Buzzer on
+			triggerAction('on', 'activate_buzzer');
+		} else if (!gamepad.buttons[1].pressed && bButtonPressed) {
+			bButtonPressed = false;
+			// Trigger Buzzer off
+			triggerAction('off', 'activate_buzzer');
+		}
+	}
+
+	function triggerAction(status, endpoint) {
+		$.ajax({
+			url: `/${endpoint}/`,
+			method: 'POST',
+			headers: { "X-CSRFToken": csrfToken },
+			data: { 'status': status },
+			success: function (data) {
+				console.log(data.status);
+			}
+		});
 	}
 
 	// Update the gamepad state at a regular interval

@@ -18,6 +18,7 @@ urlpatterns = [
     path('set_oled_message/', views.set_oled_message, name='set_oled_message'),
     path('close_oled_message/', views.close_oled_message, name='close_oled_message'),
     path('light_led/', views.light_led, name='light_led'),
+    path('activate_buzzer/', views.activate_buzzer, name='activate_buzzer'),
 
     path('camera/', live_camera_feed, name='live_camera_feed'),
     path('display_oled/', oled_view, name='oled_view'),
