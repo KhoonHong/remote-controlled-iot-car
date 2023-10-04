@@ -189,21 +189,30 @@ def set_oled_message(request):
         # Display the data
         display_humidity(draw, font, width, height, disp, image, most_recent_humidity)
 
-    elif message_type == 'location':       
-        # Query last reading
+    elif message_type == 'location':
+        # Query the latest GPS data
         query = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
         docs = query.stream()
 
+        # Initialize latitude and longitude to None
+        latitude, longitude = None, None
+
         for doc in docs:
             data = doc.to_dict()
-            latitude = data['latitude']
-            longitude = data['longitude']
-            
-        country, state = get_location_by_coordinates(latitude, longitude)
-        location_name = f"{state}, {country}"
-        
-        # Now call your display function
-        display_location(draw, font, width, height, disp, image, longitude, latitude, location_name)
+            latitude = data.get('latitude')
+            longitude = data.get('longitude')
+
+        if latitude is not None and longitude is not None:
+            # Get location information
+            country, state = get_location_by_coordinates(latitude, longitude)
+            location_name = f"{state}, {country}"
+
+            # Call your display function
+            display_location(draw, font, width, height, disp, image, longitude, latitude, location_name)
+
+            return JsonResponse({'status': 'success', 'message': 'Location data displayed'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'No GPS data available'}, status=400)
     elif message_type == 'motor':
         pass
     print("Message sent to OLED.")

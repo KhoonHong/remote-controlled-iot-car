@@ -233,6 +233,13 @@
       // CSRF Token needed for Django POST requests
       var csrfToken = $("[name=csrfmiddlewaretoken]").val();
       var oled_type = $(this).val()
+      Toast.fire({
+        title: 'Loading...',
+        text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      })
       // The AJAX request
       $.ajax({
         url: "/set_oled_message/",  // Your Django URL endpoint
@@ -240,7 +247,8 @@
         data: { "option": oled_type },  // Data sent with the POST request
         headers: { "X-CSRFToken": csrfToken },  // CSRF token
         success: function (response) {
-          Toast.fire ({
+          Toast.close();
+          Toast.fire({
             icon: 'success',
             text: oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + ' applied successfully!',
           })
