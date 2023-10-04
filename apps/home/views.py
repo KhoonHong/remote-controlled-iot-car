@@ -222,8 +222,6 @@ def set_oled_message(request):
         else:
             print("Debug - No GPS data available.")
             return JsonResponse({'status': 'error', 'message': 'No GPS data available'}, status=400)
-    elif message_type == 'motor':
-        pass
     print("Message sent to OLED.")
     return JsonResponse({'status': 'success'})
 
