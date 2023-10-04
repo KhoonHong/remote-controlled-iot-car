@@ -232,24 +232,54 @@
     $('.single-checkbox').click(function () {
       // CSRF Token needed for Django POST requests
       var csrfToken = $("[name=csrfmiddlewaretoken]").val();
+
+      // check if any checkbox is checked
+      if ($('.single-checkbox:checked').length == 0) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          text: 'Closing OLED display...',
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading()
+          }
+        })
+        $.ajax({
+          url: "/close_oled_message/",  // Your Django URL endpoint
+          type: "POST",
+          data: { "option": oled_type },  // Data sent with the POST request
+          headers: { "X-CSRFToken": csrfToken },  // CSRF token
+          success: function (response) {
+            Toast.close();
+            Toast.fire({
+              icon: 'success',
+              text: 'OLED display closed successfully!',
+            })
+          },
+          error: function (xhr, status, error) {
+            // Error response handler
+            console.log("An error occurred:", error);
+            Toast.fire({
+              icon: 'error',
+              text: 'Failed to apply display option: ' + error,
+            });
+          }
+        });
+      }
+
       var oled_type = $(this).val()
       Swal.fire({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-
         text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
         timerProgressBar: true,
         didOpen: () => {
           Swal.showLoading()
         }
-      }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-          console.log('I was closed by the timer')
-        }
       })
-      // The AJAX request
+
       $.ajax({
         url: "/set_oled_message/",  // Your Django URL endpoint
         type: "POST",
