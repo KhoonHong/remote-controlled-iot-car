@@ -537,14 +537,49 @@ def setup_pir():
     GPIO.setup(PIR_PIN, GPIO.IN)
     GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=motion_detected)
 
+
+# Global variables
+last_trigger_time = 0
+debounce_time = 3  # seconds
+trigger_count = 0
+required_triggers = 3
+time_window = []  # For time-based averaging
+window_size = 5  # Number of readings to consider for averaging
+threshold = 2  # Number of 'True' readings required in the window to trigger
+
+
 def motion_detected(channel):
-    global motion_detected_flag
-    print("Motion Detected!")
-    motion_detected_flag = True
+    global last_trigger_time, trigger_count, time_window
+
+    # Get the current time
+    current_time = time.time()
+
+    # Debouncing
+    if current_time - last_trigger_time < debounce_time:
+        return
+
+    # Update trigger count
+    trigger_count += 1
+
+    # Update the time window for averaging
+    time_window.append(True)
+    if len(time_window) > window_size:
+        del time_window[0]
+
+    # Check if conditions are met to register a motion detected event
+    if trigger_count >= required_triggers and sum(time_window) >= threshold:
+        print("Motion Detected!")
+        global motion_detected_flag
+        motion_detected_flag = True
+
+        # Reset variables
+        last_trigger_time = current_time
+        trigger_count = 0
+        time_window = []
+
 
 def check_motion_detected(request):
     global motion_detected_flag
-
     # Wait for motion_detected_flag to become True
     while not motion_detected_flag:
         time.sleep(1)
