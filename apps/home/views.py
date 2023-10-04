@@ -606,7 +606,7 @@ def get_humidity_dashboard():
 def get_sensor_data(request):
     try:
         db = firestore.client()
-        docs = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(10).stream()
+        docs = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING)
         
         data = []
         for doc in docs:
