@@ -830,6 +830,20 @@ var EnvironmentalDataChart = (function () {
 			type: 'line',
 			options: {
 				scales: {
+					xAxes: [{
+						type: 'time',
+						time: {
+							unit: 'minute', // Or 'second', 'hour', 'day', etc.
+							displayFormats: {
+								minute: 'MM/DD, h:mm A' // Will display like '10/04, 6:24 PM'
+							}
+						},
+						gridLines: {
+							lineWidth: 1,
+							color: 'gray',
+							zeroLineColor: 'gray'
+						}
+					}],
 					yAxes: [{
 						gridLines: {
 							lineWidth: 1,
