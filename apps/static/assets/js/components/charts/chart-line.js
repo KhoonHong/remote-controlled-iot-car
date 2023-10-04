@@ -4,7 +4,7 @@ var EnvironmentalDataChart = (function() {
 
   // Variables
 
-  var $chart = $('#chart-environmental-data');
+  var $chart = $('#chart-environmental-data1');
 
   // Methods
 
