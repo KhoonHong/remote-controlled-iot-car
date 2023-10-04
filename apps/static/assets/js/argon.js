@@ -875,7 +875,7 @@ var EnvironmentalDataChart = (function () {
 					let newLabels = [];
 					response.data.forEach((item) => {
 						newData.push(item.temperature);
-						newLabels.push(item.timestamp);
+						newLabels.push(formatDateTime(item.timestamp));
 					});
 					init($chart, newData, newLabels);
 				}
@@ -886,6 +886,16 @@ var EnvironmentalDataChart = (function () {
 	}
 
 })();
+
+function formatDateTime(dateTimeStr) {
+    const date = new Date(dateTimeStr);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
 
 //
 // Bootstrap Datepicker
