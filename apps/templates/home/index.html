@@ -185,25 +185,7 @@
 <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
 <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
 <script>
-  $(document).ready(function () {
-    // CSRF Token needed for Django POST requests
-    var csrfToken = $("[name=csrfmiddlewaretoken]").val();
-    fetch('/get_temperature_dashboard/')
-      .then(response => response.json())
-      .then(data => {
-        recent_temp = data.most_recent_temperature;
-        recent_recent_temp = data.most_recent_recent_temperature;
-      })
-      .catch(error => {
-        console.error('Error fetching GPS coordinates:', error);
-        // Show an error toast
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Failed to fetch GPS coordinates!',
-        });
-      });
-  });
+
 </script>
 
 {% endblock javascripts %}
