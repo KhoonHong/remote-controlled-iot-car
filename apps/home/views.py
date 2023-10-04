@@ -459,27 +459,27 @@ def activate_buzzer(request):
     # Set up the GPIO channel as an output
     GPIO.setup(BUZZER_PIN, GPIO.OUT)
     
+    # Initialize PWM object if it's None
     if pwmBuzzer is None:
         pwmBuzzer = GPIO.PWM(BUZZER_PIN, 1)
-        pwmBuzzer.start(0)
 
     if status == 'on':
         buzzer_playing = True
+        pwmBuzzer.start(0)  # Start the PWM
         try:
             play_song(pwmBuzzer)
         finally:
             buzzer_playing = False
-            pwmBuzzer.stop()
-            GPIO.cleanup()
+            pwmBuzzer.stop()  # Stop the PWM
     else:
         buzzer_playing = False
-        pwmBuzzer.stop()
-        GPIO.cleanup()
-
+        pwmBuzzer.stop()  # Stop the PWM
+    
+    GPIO.cleanup()
     return JsonResponse({'status': 'success', 'message': 'Buzzer toggled'})
 
 
-
+    return JsonResponse({'status': 'success', 'message': 'Buzzer toggled'})
 
 def play_tone(pwmBuzzer, frequency, duration):
     if frequency == 0:  # A rest note
