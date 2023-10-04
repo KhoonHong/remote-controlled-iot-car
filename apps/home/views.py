@@ -20,6 +20,7 @@ import json
 from PIL import Image, ImageDraw, ImageFont
 import Adafruit_SSD1306
 from geopy.geocoders import Nominatim
+from functools import partial
 
 camera = Camera()
 
@@ -212,7 +213,6 @@ def set_oled_message(request):
         print("Debug - Longitude:", longitude)
         
         if latitude is not None and longitude is not None:
-            geolocator = Nominatim(user_agent="lanjiao")
             country, state = get_location_by_coordinates(latitude, longitude)
             location_name = f"{state}, {country}"
             
@@ -288,7 +288,7 @@ def display_temperature_data(draw, width, height, font, disp, current_temp, high
     disp.display()
 
 def get_location_by_coordinates(lat, long):
-    geolocator = Nominatim(user_agent="geoapiExercises")
+    geolocator = Nominatim(user_agent="iot_assignment_khlee")
     location = geolocator.reverse((lat, long), language='en')
     address = location.raw['address']
     country = address.get('country', "")
