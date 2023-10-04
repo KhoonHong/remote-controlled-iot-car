@@ -256,14 +256,14 @@
           headers: { "X-CSRFToken": csrfToken },
           success: function (response) {
             Swal.close();
-            Swal.fire({
+            Toast.fire({
               icon: 'success',
               text: 'OLED display closed successfully!',
             });
           },
           error: function (xhr, status, error) {
             console.log("An error occurred:", error);
-            Swal.fire({
+            Toast.fire({
               icon: 'error',
               text: 'Failed to apply display option: ' + error,
             });
