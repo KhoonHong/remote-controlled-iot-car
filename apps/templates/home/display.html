@@ -237,18 +237,14 @@
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
         iconColor: 'white',
+        text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
         customClass: {
           popup: 'colored-toast'
           },
         didOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer)
-          toast.addEventListener('mouseleave', Swal.resumeTimer)
           Swal.showLoading();
         },
-        text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
       })
       // The AJAX request
       $.ajax({
