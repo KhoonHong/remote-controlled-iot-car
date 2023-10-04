@@ -246,11 +246,9 @@
         didOpen: (toast) => {
           toast.addEventListener('mouseenter', Swal.stopTimer)
           toast.addEventListener('mouseleave', Swal.resumeTimer)
+          Swal.showLoading();
         },
         text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
-        didOpen: () => {
-          Swal.showLoading();
-        }
       })
       // The AJAX request
       $.ajax({
