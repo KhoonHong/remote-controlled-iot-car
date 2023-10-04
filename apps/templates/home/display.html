@@ -289,14 +289,14 @@
           headers: { "X-CSRFToken": csrfToken },
           success: function (response) {
             Swal.close();
-            Swal.fire({
+            Toast.fire({
               icon: 'success',
               text: oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + ' applied successfully!',
             });
           },
           error: function (xhr, status, error) {
             console.log("An error occurred:", error);
-            Swal.fire({
+            Toast.fire({
               icon: 'error',
               text: 'Failed to apply display option: ' + error,
             });

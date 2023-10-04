@@ -292,3 +292,5 @@ def close_oled_message(request):
     disp.begin()
     disp.clear()
     disp.display()
+
+    return JsonResponse({'status': 'success', 'message': 'OLED cleared'})
