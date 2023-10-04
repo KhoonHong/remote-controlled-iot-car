@@ -157,6 +157,7 @@ def index(request):
         # Calculate the difference between the two temperatures
         diff = recent_temp - second_recent_temp
         humidify_diff = recent_humidity - second_recent_humidity
+        print("Humidity Diff: " + humidify_diff)
 
         context = {
             'segment': 'index',
