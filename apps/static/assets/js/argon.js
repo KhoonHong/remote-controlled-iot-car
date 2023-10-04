@@ -865,11 +865,6 @@ var EnvironmentalDataChart = (function () {
 		$chart.data('chart', envDataChart);
 	};
 
-	if ($chart.length) {
-		// Populate 'data' and 'labels' arrays with your temperature and humidity data and labels
-		init($chart, data, labels);
-	}
-
 })();
 
 //
