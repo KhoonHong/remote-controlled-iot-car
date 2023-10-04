@@ -131,15 +131,16 @@
             <div class="col">
               <!-- Insert Proximity chart/graph here -->
               <ul class="nav nav-pills justify-content-end">
-                <li class="nav-item mr-2 mr-md-0" data-toggle="chart" data-target="#chart-sales-dark"
-                  data-update='{"data":{"datasets":[{"data":[0, 20, 10, 30, 15, 40, 20, 60, 60]}]}}'
+                <li class="nav-item mr-2 mr-md-0" data-toggle="chart" data-target="#chart-environmental-data"
+                  data-update='{"data":{"datasets":[{"data":[0,20,30,33,44,45,46]}]}}'
                   data-suffix="°C">
                   <a href="#" class="nav-link py-2 px-3 active" data-toggle="tab">
-                    <span class="d-none d-md-block">Proximity</span>
-                    <span class="d-md-none">M</span>
+                    <span class="d-none d-md-block">Temperature</span>
+                    <span class="d-md-none">T</span>
                   </a>
                 </li>
               </ul>
+              <canvas id="chart-environmental-data" width="400" height="200"></canvas>              
             </div>
           </div>
         </div>

@@ -603,3 +603,17 @@ def get_humidity_dashboard():
     except Exception as e:
         print(f"Error retrieving humidity: {e}")
 
+def get_sensor_data(request):
+    try:
+        db = firestore.client()
+        docs = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(10).stream()
+        
+        data = []
+        for doc in docs:
+            doc_dict = doc.to_dict()
+            data.append(doc_dict)
+        
+        return JsonResponse({"status": "success", "data": data})
+    except Exception as e:
+        print(f"Error fetching sensor data: {e}")
+        return JsonResponse({"status": "error", "message": "Could not fetch data"})

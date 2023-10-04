@@ -1,35 +1,28 @@
 'use strict';
 
-//
-// Sales chart
-//
-
-var SalesChart = (function() {
+var EnvironmentalDataChart = (function() {
 
   // Variables
 
-  var $chart = $('#chart-sales-dark');
-
+  var $chart = $('#chart-environmental-data');
 
   // Methods
 
-  function init($chart) {
+  function init($chart, data, labels) {
 
-    var salesChart = new Chart($chart, {
+    var envDataChart = new Chart($chart, {
       type: 'line',
       options: {
         scales: {
           yAxes: [{
             gridLines: {
               lineWidth: 1,
-              color: Charts.colors.gray[900],
-              zeroLineColor: Charts.colors.gray[900]
+              color: 'gray',
+              zeroLineColor: 'gray'
             },
             ticks: {
               callback: function(value) {
-                if (!(value % 10)) {
-                  return '$' + value + 'k';
-                }
+                return value + '°C';
               }
             }
           }]
@@ -39,38 +32,58 @@ var SalesChart = (function() {
             label: function(item, data) {
               var label = data.datasets[item.datasetIndex].label || '';
               var yLabel = item.yLabel;
-              var content = '';
-
-              if (data.datasets.length > 1) {
-                content += '<span class="popover-body-label mr-auto">' + label + '</span>';
-              }
-
-              content += '<span class="popover-body-value">$' + yLabel + 'k</span>';
-              return content;
+              return label + ': ' + yLabel + '°C';
             }
           }
         }
       },
       data: {
-        labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: labels,
         datasets: [{
-          label: 'Performance',
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60]
+          label: 'Temperature',
+          data: data,
         }]
       }
     });
 
-    // Save to jQuery object
-
-    $chart.data('chart', salesChart);
-
+    $chart.data('chart', envDataChart);
   };
 
-
-  // Events
-
   if ($chart.length) {
-    init($chart);
+    // Populate 'data' and 'labels' arrays with your temperature and humidity data and labels
+    init($chart, data, labels);
   }
 
 })();
+
+
+
+function updateSensorData(chartInstance) {
+  $.ajax({
+      url: "/api/get_sensor_data/",
+      method: "GET",
+      success: function(response) {
+          if(response.status === "success") {
+              let newData = [];
+              let newLabels = [];
+              response.data.forEach((item) => {
+                  newData.push(item.temperature);
+                  newLabels.push(item.timestamp);
+              });
+              
+              chartInstance.data.labels = newLabels;
+              chartInstance.data.datasets[0].data = newData;
+              chartInstance.update();
+          }
+      }
+  });
+}
+
+// Assuming envDataChart is the Chart.js instance
+$(document).ready(function () {
+  setInterval(function() {
+      updateSensorData(envDataChart);
+  }, 60000);  // Update every 60 seconds
+});
+
+
