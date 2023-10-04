@@ -151,7 +151,7 @@ songSpeed = 1.0
 @login_required(login_url="/login/")
 def index(request):
     try:
-        recent_temp, second_recent_temp = get_temperature_dashboard(request)
+        recent_temp, second_recent_temp = get_temperature_dashboard()
         
         # Calculate the difference between the two temperatures
         diff = recent_temp - second_recent_temp
