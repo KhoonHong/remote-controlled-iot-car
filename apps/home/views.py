@@ -306,7 +306,7 @@ def close_oled_message(request):
 
 
 def light_led(request):   
-    status = request.POST.get('status')
+    status = request.GET.get('status')
     # Set the GPIO mode
     GPIO.setmode(GPIO.BCM)
 
