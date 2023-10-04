@@ -150,7 +150,10 @@ songSpeed = 1.0
 
 @login_required(login_url="/login/")
 def index(request):
+    latitude, longitude = None, None
     try:
+        db = firestore.client()
+
         recent_temp, second_recent_temp = get_temperature_dashboard()
         recent_humidity, second_recent_humidity = get_humidity_dashboard()
         
@@ -158,6 +161,16 @@ def index(request):
         diff = recent_temp - second_recent_temp
         humidify_diff = recent_humidity - second_recent_humidity
         print("Humidity Diff: " , humidify_diff)
+
+        latest_doc = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).stream()
+
+        for doc in latest_doc:
+            data = doc.to_dict()
+            geo_point = data.get('location')
+            
+            if geo_point:
+                latitude = geo_point.latitude
+                longitude = geo_point.longitude
 
         context = {
             'segment': 'index',
@@ -167,6 +180,8 @@ def index(request):
             'recent_humidity': recent_humidity,
             'second_recent_humidity': second_recent_humidity,
             'humidify_diff': humidify_diff,
+            "location": get_location_by_coordinates(latitude, longitude),
+            "coordinates": f"{latitude}, {longitude}"
         }
 
         html_template = loader.get_template('home/index.html')
