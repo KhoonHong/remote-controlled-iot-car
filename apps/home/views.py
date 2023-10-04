@@ -499,7 +499,7 @@ def setup_pir():
     GPIO.setup(PIR_PIN, GPIO.IN)
     GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=motion_detected)
 
-def motion_detected():
+def motion_detected(channel):
     print("Motion Detected!")
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
