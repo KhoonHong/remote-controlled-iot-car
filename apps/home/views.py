@@ -190,6 +190,7 @@ def set_oled_message(request):
         display_humidity(draw, font, width, height, disp, image, most_recent_humidity)
 
     elif message_type == 'location':
+        print("Debug - Location message type selected.")
         # Query the latest GPS data
         query = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
         docs = query.stream()
