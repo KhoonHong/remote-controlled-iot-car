@@ -149,6 +149,7 @@ def set_oled_message(request):
 
     # Initialize Firestore client
     db = firestore.client()
+    print(f"Message type: {message_type}")
 
     if message_type == 'temperature':
         query = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING)
