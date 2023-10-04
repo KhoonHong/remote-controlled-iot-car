@@ -21,8 +21,19 @@ from PIL import Image, ImageDraw, ImageFont
 import Adafruit_SSD1306
 from geopy.geocoders import Nominatim
 from functools import partial
+import RPi.GPIO as GPIO
+
 
 camera = Camera()
+
+# Set the GPIO mode
+GPIO.setmode(GPIO.BCM)
+
+# Define the LED pin
+LED_PIN = 20
+
+# Set up the LED pin as an output
+GPIO.setup(LED_PIN, GPIO.OUT)
 
 
 @login_required(login_url="/login/")
@@ -301,3 +312,15 @@ def close_oled_message(request):
     disp.display()
 
     return JsonResponse({'status': 'success', 'message': 'OLED cleared'})
+
+
+def light_led(request):   
+    status = request.POST.get('status')
+    if status == 'on':
+        # Turn the LED on
+        GPIO.output(LED_PIN, GPIO.HIGH)
+    else:
+        # Turn the LED off
+        GPIO.output(LED_PIN, GPIO.LOW)
+        # Cleanup GPIO settings
+        GPIO.cleanup()

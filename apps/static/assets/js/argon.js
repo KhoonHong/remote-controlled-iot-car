@@ -1137,10 +1137,6 @@ function sendDataToBackend(x, y) {
 	}, HUMAN_REACTION_DELAY);
 }
 
-
-
-
-
 $(document).ready(function () {
 	// const initialData = $('[data-toggle="chart"]').data('update');
 	// const $chartElement = $('#chart-sales-dark');
@@ -1152,6 +1148,8 @@ $(document).ready(function () {
 	//     data: initialData.data,
 	//     // Add other chart options if needed
 	// });
+	// CSRF Token needed for Django POST requests
+	var csrfToken = $("[name=csrfmiddlewaretoken]").val();
 
 	$(window).on("gamepadconnected", function (e) {
 		const gamepad = e.originalEvent.gamepad
@@ -1172,15 +1170,37 @@ $(document).ready(function () {
 		gamepadConnected = false;
 	});
 
-	// Function to update the gamepad state
 	function updateGamepad() {
 		// Retrieve the state of the gamepad
 		gamepad = navigator.getGamepads()[0];
-
+	
 		// Check if the "A" button is pressed (button index 0)
-		if (gamepad.buttons[0].pressed) {
+		if (gamepad.buttons[0].pressed && !aButtonPressed) {
+			aButtonPressed = true;
 			console.log("A button pressed");
-			// You can trigger additional actions here
+			// Trigger LED on
+			$.ajax({
+				url: '/light_led/',
+				method: 'GET',
+				headers: { "X-CSRFToken": csrfToken },
+				data: { 'status': 'on' },
+				success: function (data) {
+					console.log(data.status);
+				}
+			});
+		} else if (!gamepad.buttons[0].pressed && aButtonPressed) {
+			aButtonPressed = false;
+			console.log("A button released");
+			// Trigger LED off
+			$.ajax({
+				url: '/light_led/',
+				method: 'GET',
+				headers: { "X-CSRFToken": csrfToken },
+				data: { 'status': 'off' },
+				success: function (data) {
+					console.log(data.status);
+				}
+			});
 		}
 	}
 
