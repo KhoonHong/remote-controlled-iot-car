@@ -814,7 +814,7 @@ var BarsChart = (function () {
 })();
 
 'use strict';
-
+var envDataChart;
 var EnvironmentalDataChart = (function() {
 
   // Variables
@@ -825,7 +825,7 @@ var EnvironmentalDataChart = (function() {
 
   function init($chart, data, labels) {
 
-    var envDataChart = new Chart($chart, {
+    envDataChart = new Chart($chart, {
       type: 'line',
       options: {
         scales: {
