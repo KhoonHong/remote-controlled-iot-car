@@ -234,13 +234,6 @@
       var csrfToken = $("[name=csrfmiddlewaretoken]").val();
       var oled_type = $(this).val()
       Swal.fire({
-
-        
-        didOpen: (toast) => {
-          Swal.showLoading();
-        },
-      })
-      Swal.fire({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
