@@ -445,24 +445,27 @@ def light_led(request):
     return JsonResponse({'status': 'success', 'message': 'LED toggled'})
 
 # Global variable to control buzzer state
-buzzer_playing = True
+buzzer_playing = False
+pwmBuzzer = None  # Initialize PWM object
 
 @csrf_exempt
 def activate_buzzer(request):
-    global buzzer_playing
+    global buzzer_playing, pwmBuzzer
     
     status = request.POST.get('status')
     BUZZER_PIN = 19
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(BUZZER_PIN, GPIO.OUT)
-    pwmBuzzer = GPIO.PWM(BUZZER_PIN, 1)
-    pwmBuzzer.start(0)
+    
+    if pwmBuzzer is None:
+        pwmBuzzer = GPIO.PWM(BUZZER_PIN, 1)
+        pwmBuzzer.start(0)
 
     if status == 'on':
         buzzer_playing = True
         try:
             play_song(pwmBuzzer)
         finally:
+            buzzer_playing = False
             pwmBuzzer.stop()
             GPIO.cleanup()
     else:
@@ -471,6 +474,7 @@ def activate_buzzer(request):
         GPIO.cleanup()
 
     return JsonResponse({'status': 'success', 'message': 'Buzzer toggled'})
+
 
 
 def play_tone(pwmBuzzer, frequency, duration):
