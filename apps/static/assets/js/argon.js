@@ -1088,6 +1088,7 @@ let gamepadConnected = false;
 let lastX = null;
 let lastY = null;
 let gamepad;
+let aButtonPressed = false; // flag to keep track of A button state
 
 function checkInputs() {
 	if (!gamepadConnected) {
