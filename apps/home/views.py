@@ -450,6 +450,7 @@ buzzer_playing = False
 pwmBuzzer = None
 stop_song_event = Event()
 
+@csrf_exempt
 def activate_buzzer(request):
     global buzzer_playing, pwmBuzzer, stop_song_event
     
