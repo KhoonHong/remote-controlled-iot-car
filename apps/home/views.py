@@ -26,6 +26,7 @@ from threading import Thread, Event
 import threading
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseServerError
 
 camera = Camera()
 
@@ -149,10 +150,24 @@ songSpeed = 1.0
 
 @login_required(login_url="/login/")
 def index(request):
-    context = {'segment': 'index'}
+    try:
+        recent_temp, second_recent_temp = get_temperature_dashboard(request)
+        
+        # Calculate the difference between the two temperatures
+        diff = recent_temp - second_recent_temp
 
-    html_template = loader.get_template('home/index.html')
-    return HttpResponse(html_template.render(context, request))
+        context = {
+            'segment': 'index',
+            'recent_temp': recent_temp,
+            'second_recent_temp': second_recent_temp,
+            'diff': diff
+        }
+
+        html_template = loader.get_template('home/index.html')
+        return HttpResponse(html_template.render(context, request))
+    except Exception as e:
+        print(f"Error in index view: {e}")
+        return HttpResponseServerError('Could not render the template.')
 
 
 @login_required(login_url="/login/")
@@ -512,3 +527,30 @@ def motion_detected(channel):
 pir_thread = threading.Thread(target=setup_pir)
 pir_thread.daemon = True
 pir_thread.start()
+
+
+def get_temperature_dashboard():
+    try:
+        # Initialize Firestore client
+        db = firestore.client()
+        
+        # Query the database, ordering by timestamp and limiting to the 2 most recent entries
+        docs = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(2).stream()
+        
+        # Initialize list to hold temperature data
+        temperatures = []
+        
+        # Loop through query results and store in the list
+        for doc in docs:
+            doc_dict = doc.to_dict()
+            temperatures.append(doc_dict.get('temperature'))
+        
+        # Check if there are enough readings
+        if len(temperatures) < 2:
+            return None, None
+        
+        # Extract the most recent and second most recent temperatures
+        return temperatures[0], temperatures[1]
+
+    except Exception as e:
+        print(f"Error retrieving temperature: {e}")

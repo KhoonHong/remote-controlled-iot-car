@@ -1218,7 +1218,7 @@ $(document).ready(function () {
 	}, 100);
 
 	const motionSocket = new WebSocket(
-		'ws://' + window.location.host + '/ws/motion/'
+		'wss://' + window.location.host + '/ws/motion/'
 	);
 	
 	motionSocket.onmessage = function(e) {
