@@ -865,6 +865,26 @@ var EnvironmentalDataChart = (function () {
 		$chart.data('chart', envDataChart);
 	};
 
+	if ($chart.length) {
+		$.ajax({
+			url: "/get_sensor_data/",
+			method: "GET",
+			success: function (response) {
+				if (response.status === "success") {
+					let newData = [];
+					let newLabels = [];
+					response.data.forEach((item) => {
+						newData.push(item.temperature);
+						newLabels.push(item.timestamp);
+					});
+					init($chart, newData, newLabels);
+				}
+			}
+		});
+		// Populate 'data' and 'labels' arrays with your temperature and humidity data and labels
+		
+	}
+
 })();
 
 //
