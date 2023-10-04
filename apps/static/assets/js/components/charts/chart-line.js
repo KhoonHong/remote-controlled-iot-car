@@ -60,7 +60,7 @@ var EnvironmentalDataChart = (function() {
 
 function updateSensorData(chartInstance) {
   $.ajax({
-      url: "/api/get_sensor_data/",
+      url: "/get_sensor_data/",
       method: "GET",
       success: function(response) {
           if(response.status === "success") {
@@ -82,7 +82,7 @@ function updateSensorData(chartInstance) {
 // Assuming envDataChart is the Chart.js instance
 $(document).ready(function () {
   setInterval(function() {
-      updateSensorData(envDataChart);
+      updateSensorData($chart);
   }, 60000);  // Update every 60 seconds
 });
 
