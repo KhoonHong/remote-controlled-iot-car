@@ -19,11 +19,12 @@ def store_to_firestore(latitude, longitude):
     try:
         db = firestore.client()
         doc_ref = db.collection('gps_data').document()
+        geo_point = firestore.GeoPoint(latitude, longitude)
         doc_ref.set({
-            'latitude': latitude,
-            'longitude': longitude,
+            'location': geo_point,
             'timestamp': firestore.SERVER_TIMESTAMP
         })
+        print("Data successfully saved to Firestore")
     except Exception as e:
         print(f"Error saving to Firestore: {e}")
 

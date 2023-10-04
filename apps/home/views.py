@@ -105,18 +105,22 @@ def take_screenshot(request):
 
 def get_gps_coordinates(request):
     db = firestore.client()
-
+    
     # Order by the 'timestamp' field in descending order and limit the result to one document
-    latest_doc = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).get()
+    latest_doc = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).stream()
 
     for doc in latest_doc:
         data = doc.to_dict()
-        latitude = data['latitude']
-        longitude = data['longitude']  # Corrected the spelling from 'longtitude' to 'longitude'
-        return JsonResponse({'lat': latitude, 'lng': longitude})
-
+        geo_point = data.get('location')
+        
+        if geo_point:
+            latitude = geo_point.latitude
+            longitude = geo_point.longitude
+            return JsonResponse({'lat': latitude, 'lng': longitude})
+    
     # Return some default values or error values if no data is found
     return JsonResponse({'lat': 0, 'lng': 0})
+
 
 
 def map_view(request):
@@ -190,33 +194,31 @@ def set_oled_message(request):
 
     elif message_type == 'location':
         print("Debug - Location message type selected.")
-        # Query the latest GPS data
+        db = firestore.client()  # Assuming you have imported firestore and initialized it
+        
         query = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
         docs = query.stream()
         
-        # Initialize latitude and longitude to None
         latitude, longitude = None, None
-
+        
         for doc in docs:
             data = doc.to_dict()
-            latitude = data.get('latitude')
-            longitude = data.get('longitude')
+            geo_point = data.get('location')
+            if geo_point:
+                latitude = geo_point.latitude
+                longitude = geo_point.longitude
 
-        # Debugging: Print the latitude and longitude
         print("Debug - Latitude:", latitude)
         print("Debug - Longitude:", longitude)
-
+        
         if latitude is not None and longitude is not None:
-            # Get location information
             country, state = get_location_by_coordinates(latitude, longitude)
             location_name = f"{state}, {country}"
-
-            # Call your display function
+            
             display_location(draw, font, width, height, disp, image, longitude, latitude, location_name)
-
+            
             return JsonResponse({'status': 'success', 'message': 'Location data displayed'})
         else:
-            # Debugging: This is where you are getting the 400 error.
             print("Debug - No GPS data available.")
             return JsonResponse({'status': 'error', 'message': 'No GPS data available'}, status=400)
     elif message_type == 'motor':
