@@ -324,7 +324,7 @@ def light_led(request):
 
     # Set up the LED pin as an output
     GPIO.setup(LED_PIN, GPIO.OUT)
-    
+
     if status == 'on':
         # Turn the LED on
         GPIO.output(LED_PIN, GPIO.HIGH)
@@ -333,3 +333,5 @@ def light_led(request):
         GPIO.output(LED_PIN, GPIO.LOW)
         # Cleanup GPIO settings
         GPIO.cleanup()
+    
+    return JsonResponse({'status': 'success', 'message': 'LED toggled'})
