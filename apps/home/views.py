@@ -484,6 +484,6 @@ def play_tone(pwmBuzzer, frequency, duration):
     pwmBuzzer.ChangeDutyCycle(0)  # Silence the buzzer
     time.sleep(0.05)  # A short delay between notes
 
-def play_song():
+def play_song(pwmBuzzer):
     for i in range(len(notes)):
-        play_tone(notes[i], durations[i])
+        play_tone(pwmBuzzer, notes[i], durations[i])
