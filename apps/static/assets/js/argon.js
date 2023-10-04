@@ -889,7 +889,7 @@ var EnvironmentalDataChart = (function () {
 					let newLabels = [];
 					response.data.forEach((item) => {
 						newData.push(item.temperature);
-						newLabels.push(formatDateTime(item.timestamp));
+						newLabels.push((item.timestamp));
 					});
 					init($chart, newData, newLabels);
 				}
