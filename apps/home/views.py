@@ -456,6 +456,9 @@ def activate_buzzer(request):
     BUZZER_PIN = 19
     GPIO.setmode(GPIO.BCM)
     
+    # Set up the GPIO channel as an output
+    GPIO.setup(BUZZER_PIN, GPIO.OUT)
+    
     if pwmBuzzer is None:
         pwmBuzzer = GPIO.PWM(BUZZER_PIN, 1)
         pwmBuzzer.start(0)
@@ -474,6 +477,7 @@ def activate_buzzer(request):
         GPIO.cleanup()
 
     return JsonResponse({'status': 'success', 'message': 'Buzzer toggled'})
+
 
 
 
