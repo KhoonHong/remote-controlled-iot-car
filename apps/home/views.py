@@ -145,7 +145,7 @@ def set_oled_message(request):
     # Clear previous drawings
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-    message_type = request.GET.get('option')
+    message_type = request.POST.get('option')
 
     # Initialize Firestore client
     db = firestore.client()
