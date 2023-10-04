@@ -212,6 +212,7 @@ def set_oled_message(request):
         print("Debug - Longitude:", longitude)
         
         if latitude is not None and longitude is not None:
+            geolocator = Nominatim(user_agent="lanjiao")
             country, state = get_location_by_coordinates(latitude, longitude)
             location_name = f"{state}, {country}"
             
