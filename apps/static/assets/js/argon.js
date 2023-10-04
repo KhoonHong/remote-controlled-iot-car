@@ -1143,7 +1143,8 @@ function sendDataToBackend(x, y) {
 $(document).ready(function () {
 	// CSRF Token needed for Django POST requests
 	var csrfToken = $("[name=csrfmiddlewaretoken]").val();
-
+	var newData = [];
+	var newLabels = [];
 	newData, newLabels = updateSensorData();
 	// Initialize your chart
     init($('#chart-environmental-data'), newData, newLabels);
