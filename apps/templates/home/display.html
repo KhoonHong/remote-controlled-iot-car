@@ -237,11 +237,8 @@
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        iconColor: 'white',
-        customClass: {
-          popup: 'colored-toast'
-        },
-        html: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
+
+        text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
         timerProgressBar: true,
         didOpen: () => {
           Swal.showLoading()
