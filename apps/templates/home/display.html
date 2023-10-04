@@ -237,15 +237,17 @@
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
+        timerProgressBar: true,
         iconColor: 'white',
-        text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
         customClass: {
           popup: 'colored-toast'
-          },
-        didOpen: (toast) => {
-          Swal.showLoading();
         },
+        html: '<div>Loading... <i class="fa fa-spinner fa-spin"></i></div>',
+        didOpen: (toast) => {
+          // Do something here if needed
+        }
       })
+
       // The AJAX request
       $.ajax({
         url: "/set_oled_message/",  // Your Django URL endpoint
