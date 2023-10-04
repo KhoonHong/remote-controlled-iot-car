@@ -175,7 +175,7 @@ def set_oled_message(request):
                 trend = "Down"
 
             # Display the data
-            display_temperature_data(current_temp, high_temp, low_temp, trend)
+            display_temperature_data(draw, width, height, font, disp, current_temp, high_temp, low_temp, trend, image)
 
     elif message_type == 'humidity':
         query = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING)
