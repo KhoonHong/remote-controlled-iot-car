@@ -1217,27 +1217,17 @@ $(document).ready(function () {
 		}
 	}, 100);
 
-	// Initialize WebSocket connection
-	const motionSocket = new WebSocket('wss://192.168.100.151:8000/ws/motion/');
-
-	// Listen for messages
-	motionSocket.addEventListener('message', function(event) {
-		let data = JSON.parse(event.data);
+	const motionSocket = new WebSocket(
+		'ws://' + window.location.host + '/ws/motion/'
+	);
+	
+	motionSocket.onmessage = function(e) {
+		const data = JSON.parse(e.data);
 		if (data.motion === 'detected') {
-			// Trigger Xbox controller vibration here
-			if ("getGamepads" in navigator) {
-				let gamepads = navigator.getGamepads();
-				if (gamepads[0]) {
-					gamepads[0].vibrationActuator.playEffect("dual-rumble", {
-						startDelay: 0,
-						duration: 1000,
-						weakMagnitude: 1.0,
-						strongMagnitude: 1.0
-					});
-				}
-			}
+			// Insert code to vibrate Xbox controller here
 		}
-	});
+	};
+	
 
 
 	// setInterval(() => {
