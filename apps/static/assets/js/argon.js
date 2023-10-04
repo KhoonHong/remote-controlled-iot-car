@@ -1218,7 +1218,7 @@ $(document).ready(function () {
 	}, 100);
 
 	// Initialize WebSocket connection
-	const motionSocket = new WebSocket('ws://0.0.0.0:8000/ws/motion/');
+	const motionSocket = new WebSocket('wss://0.0.0.0:8000/ws/motion/');
 
 	// Listen for messages
 	motionSocket.addEventListener('message', function(event) {
