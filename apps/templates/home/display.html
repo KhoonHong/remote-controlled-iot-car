@@ -237,7 +237,7 @@
       $.ajax({
         url: "/set_oled_message/",  // Your Django URL endpoint
         type: "POST",
-        data: { "option": $(this.target).val() },  // Data sent with the POST request
+        data: { "option": oled_type },  // Data sent with the POST request
         headers: { "X-CSRFToken": csrfToken },  // CSRF token
         success: function (response) {
           Toast.fire ({
