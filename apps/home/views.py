@@ -142,6 +142,9 @@ def set_oled_message(request):
     # Initialize font (default)
     font = ImageFont.load_default()
 
+    # Clear previous drawings
+    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+
     message_type = request.GET.get('option')
 
     # Initialize Firestore client
@@ -205,10 +208,7 @@ def set_oled_message(request):
 
     return JsonResponse({'status': 'success'})
 
-def display_humidity(draw, font, width, height, disp, image, humidity):
-    # Clear previous drawings
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-    
+def display_humidity(draw, font, width, height, disp, image, humidity):   
     # Create Header "Humidity Info"
     draw.text((10, 0), "Humidity Info", font=font, fill=255)
     
@@ -226,9 +226,6 @@ def display_humidity(draw, font, width, height, disp, image, humidity):
 
 
 def display_location(draw, font, width, height, disp, image, longitude, latitude, location_name):
-    # Clear previous drawings
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-    
     # Create Header "Location Info"
     draw.text((10, 0), "Location Info", font=font, fill=255)
 
@@ -251,9 +248,6 @@ def display_location(draw, font, width, height, disp, image, longitude, latitude
     disp.display()
 
 def display_temperature_data(draw, width, height, font, disp, current_temp, high_temp, low_temp, trend, image):
-    # Clear previous drawings
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-    
     # Header
     draw.text((10, 0), "Temperature Data", font=font, fill=255)
     draw.line((0, 10, width, 10), fill=255)
