@@ -447,10 +447,11 @@ def light_led(request):
 # Global variable to control buzzer state
 buzzer_playing = False
 pwmBuzzer = None  # Initialize PWM object
+song_active = False  # Flag to indicate if a song is already playing
 
 @csrf_exempt
 def activate_buzzer(request):
-    global buzzer_playing, pwmBuzzer
+    global buzzer_playing, pwmBuzzer, song_active
     
     status = request.POST.get('status')
     BUZZER_PIN = 19
@@ -459,7 +460,6 @@ def activate_buzzer(request):
     # Set up the GPIO channel as an output
     GPIO.setup(BUZZER_PIN, GPIO.OUT)
     
-    # Initialize PWM object if it's None
     if pwmBuzzer is None:
         pwmBuzzer = GPIO.PWM(BUZZER_PIN, 1)
 
@@ -471,6 +471,7 @@ def activate_buzzer(request):
         finally:
             buzzer_playing = False
             pwmBuzzer.stop()  # Stop the PWM
+            song_active = False  # Reset the flag
     else:
         buzzer_playing = False
         pwmBuzzer.stop()  # Stop the PWM
@@ -478,8 +479,15 @@ def activate_buzzer(request):
     GPIO.cleanup()
     return JsonResponse({'status': 'success', 'message': 'Buzzer toggled'})
 
+def play_song(pwmBuzzer):
+    global song_active
+    if song_active:
+        return  # Exit if another song is already playing
 
-    return JsonResponse({'status': 'success', 'message': 'Buzzer toggled'})
+    song_active = True  # Set the flag
+    for i in range(len(notes)):
+        play_tone(pwmBuzzer, notes[i], durations[i])
+
 
 def play_tone(pwmBuzzer, frequency, duration):
     if frequency == 0:  # A rest note
@@ -491,7 +499,3 @@ def play_tone(pwmBuzzer, frequency, duration):
     time.sleep(duration * songSpeed / 1000.0)  # Convert duration from ms to s
     pwmBuzzer.ChangeDutyCycle(0)  # Silence the buzzer
     time.sleep(0.05)  # A short delay between notes
-
-def play_song(pwmBuzzer):
-    for i in range(len(notes)):
-        play_tone(pwmBuzzer, notes[i], durations[i])
