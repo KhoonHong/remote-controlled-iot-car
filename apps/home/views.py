@@ -26,15 +26,6 @@ import RPi.GPIO as GPIO
 
 camera = Camera()
 
-# Set the GPIO mode
-GPIO.setmode(GPIO.BCM)
-
-# Define the LED pin
-LED_PIN = 20
-
-# Set up the LED pin as an output
-GPIO.setup(LED_PIN, GPIO.OUT)
-
 
 @login_required(login_url="/login/")
 def index(request):
