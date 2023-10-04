@@ -18,6 +18,9 @@ from .motor import *
 from django.views.decorators.csrf import csrf_exempt
 from django.http import StreamingHttpResponse
 import json
+from PIL import Image, ImageDraw, ImageFont
+import Adafruit_SSD1306
+from geopy.geocoders import Nominatim
 
 camera = Camera()
 
@@ -101,23 +104,180 @@ def take_screenshot(request):
     return JsonResponse({'status': 'screenshot taken'})
 
 
-def display_oled_view(request):
+def get_gps_coordinates(request):
+    db = firestore.client()
+
+    # Order by the 'timestamp' field in descending order and limit the result to one document
+    latest_doc = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).get()
+
+    for doc in latest_doc:
+        data = doc.to_dict()
+        latitude = data['latitude']
+        longitude = data['longitude']  # Corrected the spelling from 'longtitude' to 'longitude'
+        return JsonResponse({'lat': latitude, 'lng': longitude})
+
+    # Return some default values or error values if no data is found
+    return JsonResponse({'lat': 0, 'lng': 0})
+
+
+def map_view(request):
+    return render(request, 'home/map.html')
+
+def oled_view(request):
     return render(request, 'home/display.html')
 
 
-def get_gps_coordinates(request):
-    # Your logic to get the latitude and longitude goes here.
-    # For demonstration purposes, let's use dummy values:
-    latitude = 40.748817
-    longitude = -73.985428
-    return JsonResponse({'lat': latitude, 'lng': longitude})
+def set_oled_message(request):
+    # Initialize the OLED screen
+    disp = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_bus=1, gpio=1)
+    disp.begin()
+    disp.clear()
+    disp.display()
 
+    # Create a blank image with a black background
+    width, height = disp.width, disp.height
+    image = Image.new("1", (width, height), "black")
+    draw = ImageDraw.Draw(image)
 
-def get_gps_coordinates_from_firestore():
+    # Initialize font (default)
+    font = ImageFont.load_default()
+
+    message_type = request.GET.get('option')
+
+    # Initialize Firestore client
     db = firestore.client()
-    doc_ref = db.collection('gps_data').document()
-    doc = doc_ref.get()
-    if doc.exists:
-        return doc.to_dict()  # This returns a dictionary with all the fields of the document.
-    else:
-        return None
+
+    if message_type == 'temperature':
+        query = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING)
+        docs = query.stream()
+
+        # Initialize temperature list
+        temperatures = [doc.to_dict()['temperature'] for doc in docs]
+
+        # Calculate metrics for display
+        if not temperatures:
+            print("No data available.")
+        else:
+            current_temp = temperatures[0]
+            high_temp = max(temperatures)
+            low_temp = min(temperatures)
+            avg_temp = sum(temperatures) / len(temperatures)
+
+            # Determine trend
+            trend = "Stable"
+            if current_temp > avg_temp:
+                trend = "Up"
+            elif current_temp < avg_temp:
+                trend = "Down"
+
+            # Display the data
+            display_temperature_data(current_temp, high_temp, low_temp, trend)
+
+    elif message_type == 'humidity':
+        query = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING)
+        docs = query.stream()
+
+        # Initialize humidity list
+        humidities = [doc.to_dict()['humidity'] for doc in docs]
+        # Fetch most recent humidity value
+        most_recent_humidity = humidities[0] if humidities else None
+
+        # Display the data
+        display_humidity(draw, font, width, height, disp, image, most_recent_humidity)
+
+    elif message_type == 'location':       
+        # Query last reading
+        query = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
+        docs = query.stream()
+
+        for doc in docs:
+            data = doc.to_dict()
+            latitude = data['latitude']
+            longitude = data['longitude']
+            
+        country, state = get_location_by_coordinates(latitude, longitude)
+        location_name = f"{state}, {country}"
+        
+        # Now call your display function
+        display_location(draw, font, width, height, disp, image, longitude, latitude, location_name)
+    elif message_type == 'motor':
+        pass
+
+    return JsonResponse({'status': 'success'})
+
+def display_humidity(draw, font, width, height, disp, image, humidity):
+    # Clear previous drawings
+    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+    
+    # Create Header "Humidity Info"
+    draw.text((10, 0), "Humidity Info", font=font, fill=255)
+    
+    # Draw Horizontal Line
+    draw.line((0, 12, width, 12), fill=255)
+    
+    # Display Humidity
+    text_length = draw.textlength(f"Humidity: {humidity}%", font=font)
+    x_centered = (width - text_length) // 2
+    draw.text((x_centered, 26), f"Humidity: {humidity}%", font=font, fill=255)
+    
+    # Update the display
+    disp.image(image)
+    disp.display()
+
+
+def display_location(draw, font, width, height, disp, image, longitude, latitude, location_name):
+    # Clear previous drawings
+    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+    
+    # Create Header "Location Info"
+    draw.text((10, 0), "Location Info", font=font, fill=255)
+
+    # Draw Horizontal Line
+    draw.line((0, 12, width, 12), fill=255)
+
+    # Draw longitude
+    draw.text((10, 16), f"Longitude: {longitude}", font=font, fill=255)
+    
+    # Draw latitude
+    draw.text((10, 26), f"Latitude:  {latitude}", font=font, fill=255)
+    
+    # Draw location name, centered
+    text_length = draw.textlength(f"{location_name}", font=font)
+    x_centered = (width - text_length) // 2
+    draw.text((x_centered, 42), f"{location_name}", font=font, fill=255)
+
+    # Update the display
+    disp.image(image)
+    disp.display()
+
+def display_temperature_data(draw, width, height, font, disp, current_temp, high_temp, low_temp, trend, image):
+    # Clear previous drawings
+    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+    
+    # Header
+    draw.text((10, 0), "Temperature Data", font=font, fill=255)
+    draw.line((0, 10, width, 10), fill=255)
+    
+    # Current Temperature, positioned at the top middle
+    text_length = draw.textlength(f"Current: {current_temp}C", font=font)
+    x_centered = (width - text_length) // 2
+    draw.text((x_centered, 15), f"Current: {current_temp}C", font=font, fill=255)
+    
+    # Trend arrow, next to current temperature
+    draw.text((x_centered + text_length + 5, 15), f"{trend}", font=font, fill=255)
+    
+    # High and Low Temperature, aligned to the left
+    draw.text((10, 30), f"High: {high_temp}C", font=font, fill=255)
+    draw.text((10, 40), f"Low: {low_temp}C", font=font, fill=255)
+        
+    # Update the display
+    disp.image(image)
+    disp.display()
+
+def get_location_by_coordinates(lat, long):
+    geolocator = Nominatim(user_agent="geoapiExercises")
+    location = geolocator.reverse((lat, long), language='en')
+    address = location.raw['address']
+    country = address.get('country', "")
+    state = address.get('state', "")
+    return country, state

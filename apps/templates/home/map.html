@@ -47,11 +47,11 @@
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function () {
     // Initialize the map with a default view
     const defaultLat = 5.453340601353355;
     const defaultLng = 100.28491948227291;
@@ -59,27 +59,57 @@
     let marker;
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     console.log('Map initialized');
+
+
+    Toast.fire({
+			title: 'Loading...',
+      text: 'Fetching GPS coordinates.',
+      didOpen: () => {
+        Swal.showLoading();
+      }
+		});
+
     // Fetch the GPS coordinates using AJAX
     fetch('/get_gps_coordinates/')
-        .then(response => response.json())
-        .then(data => {
-            const lat = data.lat;
-            const lng = data.lng;
-            if (marker) {
-                map.removeLayer(marker);  // Remove the old marker if it exists
-            }
-            marker = L.marker([lat, lng]).addTo(map);
-            map.setView([lat, lng], 12);
-            document.getElementById('latitudeValue').textContent = lat;
-            document.getElementById('longitudeValue').textContent = lng;
-        })
-        .catch(error => {
-            console.error('Error fetching GPS coordinates:', error);
+      .then(response => response.json())
+      .then(data => {
+        const lat = data.lat;
+        const lng = data.lng;
+        if (marker) {
+          map.removeLayer(marker);  // Remove the old marker if it exists
+        }
+        marker = L.marker([lat, lng]).addTo(map);
+        map.setView([lat, lng], 12);
+        document.getElementById('latitudeValue').textContent = lat;
+        document.getElementById('longitudeValue').textContent = lng;
+        Toast.close();
+        if (lat == 0 && lng == 0) {
+          // Show an error toast
+          Toast.fire({
+            icon: 'error',
+            text: 'Failed to fetch GPS coordinates!',
+          });
+        }
+        else {
+          Toast.fire ({
+            icon: 'success',
+            text: 'GPS coordinates fetched successfully!',
+          })
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching GPS coordinates:', error);
+        // Show an error toast
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Failed to fetch GPS coordinates!',
         });
-});
+      });
+  });
 
 </script>
 

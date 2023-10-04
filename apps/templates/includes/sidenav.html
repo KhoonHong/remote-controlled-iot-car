@@ -12,7 +12,7 @@
         <!-- Nav items -->
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link {% if 'index' in segment %} active {% endif %}" href="/index.html">
+            <a class="nav-link {% if 'index' in segment %} active {% endif %}" href="{% url 'dashboard_view' %}">
               <i class="ni ni-tv-2 text-primary"></i>
               <span class="nav-link-text">Dashboard</span>
             </a>
@@ -24,13 +24,13 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if 'map' in segment %} active {% endif %}" href="/map.html">
+            <a class="nav-link {% if 'map' in segment %} active {% endif %}" href="{% url 'map_view' %}">
               <i class="ni ni-pin-3 text-primary"></i>
               <span class="nav-link-text">Location Tracking</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if 'tables' in segment %} active {% endif %}" href="/display.html">
+            <a class="nav-link {% if 'tables' in segment %} active {% endif %}" href="{% url 'oled_view' %}">
               <i class="ni ni-bullet-list-67 text-default"></i>
               <span class="nav-link-text">OLED Display</span>
             </a>

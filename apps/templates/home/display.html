@@ -56,7 +56,7 @@
                   </div>
                 </th>
                 <td class="selection">
-                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
+                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" value="temperature" />
                 </td>
                 <td>
                   <span class="badge badge-dot mr-4">
@@ -94,50 +94,12 @@
                   </div>
                 </th>
                 <td class="selection">
-                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
+                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" value="humidity" />
                 </td>
                 <td>
                   <span class="badge badge-dot mr-4">
                     <i class="bg-success"></i>
                     <span class="status">Active</span>
-                  </span>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="remarks">Display Sensor Data Here</span>
-                  </div>
-                </td>
-                <td class="text-right">
-                  <div class="dropdown">
-                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">
-                  <div class="media align-items-center">
-                    <a href="#" class="avatar rounded-circle mr-3">
-                      <i class="fa fa-rss"></i>
-                    </a>
-                    <div class="media-body">
-                      <span class="name mb-0 text-sm">Proximity Data</span>
-                    </div>
-                  </div>
-                </th>
-                <td class="selection">
-                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
-                </td>
-                <td>
-                  <span class="badge badge-dot mr-4">
-                    <i class="bg-danger"></i>
-                    <span class="status">Inactive</span>
                   </span>
                 </td>
                 <td>
@@ -170,12 +132,12 @@
                   </div>
                 </th>
                 <td class="selection">
-                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
+                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" value="location" />
                 </td>
                 <td>
                   <span class="badge badge-dot mr-4">
-                    <i class="bg-success"></i>
-                    <span class="status">Active</span>
+                    <i class="bg-danger"></i>
+                    <span class="status">Inactive</span>
                   </span>
                 </td>
                 <td>
@@ -208,7 +170,7 @@
                   </div>
                 </th>
                 <td class="selection">
-                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" />
+                  <input type="checkbox" class="single-checkbox" name="optionCheckbox" value="motor" />
                 </td>
                 <td>
                   <span class="badge badge-dot mr-4">
@@ -239,6 +201,7 @@
         </div>
       </div>
     </div>
+    {% csrf_token %}
   </div>
 
   {% include "includes/footer.html" %}
@@ -250,19 +213,52 @@
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let checkboxes = document.querySelectorAll('.single-checkbox');
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                if (this.checked) {
-                    checkboxes.forEach(function(innerCheckbox) {
-                        if (innerCheckbox !== checkbox) {
-                            innerCheckbox.checked = false;
-                        }
-                    });
-                }
-            });
-        });
+  document.addEventListener("DOMContentLoaded", function () {
+    let checkboxes = document.querySelectorAll('.single-checkbox');
+    checkboxes.forEach(function (checkbox) {
+      checkbox.addEventListener('change', function () {
+        if (this.checked) {
+          checkboxes.forEach(function (innerCheckbox) {
+            if (innerCheckbox !== checkbox) {
+              innerCheckbox.checked = false;
+            }
+          });
+        }
+      });
     });
+  });
+
+  $(document).ready(function () {
+    $('.single-checkbox').click(function () {
+      // CSRF Token needed for Django POST requests
+      var csrfToken = $("[name=csrfmiddlewaretoken]").val();
+      var oled_type = $(this).val()
+      // The AJAX request
+      $.ajax({
+        url: "/set_oled_message/",  // Your Django URL endpoint
+        type: "POST",
+        data: { "option": $(this.target).val() },  // Data sent with the POST request
+        headers: { "X-CSRFToken": csrfToken },  // CSRF token
+        success: function (response) {
+          // Successful response handler
+          console.log("Successfully received data:", response);
+          Toast.fire ({
+            icon: 'success',
+            text: oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + ' applied successfully!',
+          })
+        },
+        error: function (xhr, status, error) {
+          // Error response handler
+          console.log("An error occurred:", error);
+          Toast.fire({
+            icon: 'error',
+            text: 'Failed to apply display option: ' + error,
+          });
+        }
+      });
+    });
+  });
+
+
 </script>
 {% endblock javascripts %}

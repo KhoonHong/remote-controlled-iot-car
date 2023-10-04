@@ -1154,7 +1154,7 @@ $(document).ready(function () {
 		const gamepad = e.originalEvent.gamepad
 		Toast.fire({
 			icon: 'success',
-			title: "Gamepad connected: " + e.originalEvent.gamepad.id
+			text: "Gamepad connected: " + e.originalEvent.gamepad.id
 		});
 		gamepadConnected = true;
 		checkInputs(); 
@@ -1164,7 +1164,7 @@ $(document).ready(function () {
 	$(window).on("gamepaddisconnected", function (e) {
 		Toast.fire({
 			icon: 'error',
-			title: "Gamepad disconnected: " + e.originalEvent.gamepad.id
+			text: "Gamepad disconnected: " + e.originalEvent.gamepad.id
 		});
 		gamepadConnected = false;
 	});
