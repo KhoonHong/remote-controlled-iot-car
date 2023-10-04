@@ -1258,16 +1258,32 @@ $(document).ready(function () {
 		}
 	}, 100);
 
-	const motionSocket = new WebSocket(
-		'wss://' + window.location.host + '/ws/motion/'
-	);
-
-	motionSocket.onmessage = function (e) {
-		const data = JSON.parse(e.data);
-		if (data.motion === 'detected') {
-			// Insert code to vibrate Xbox controller here
+	async function checkMotionDetected() {
+		try {
+			const response = await fetch('/check_motion_detected/');
+			const data = await response.json();
+			
+			if (data.motion_detected) {
+				// Code to vibrate the Xbox controller
+				const gamepads = navigator.getGamepads();
+				if (gamepads[0]) {
+					gamepads[0].vibrationActuator.playEffect("dual-rumble", {
+						duration: 1000,
+						strongMagnitude: 1.0,
+						weakMagnitude: 1.0
+					});
+				}
+			}
+		} catch (error) {
+			console.error('Error:', error);
+		} finally {
+			// Restart long polling
+			checkMotionDetected();
 		}
-	};
+	}
+	
+	// Start the long polling
+	checkMotionDetected();
 
 
 	$("#startBtn").click(function () {

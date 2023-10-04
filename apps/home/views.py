@@ -30,6 +30,8 @@ from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseServer
 
 camera = Camera()
 
+motion_detected_flag = False
+
 # Music notes and their corresponding frequencies
 NOTE_C4 = 262
 NOTE_D4 = 294
@@ -536,14 +538,21 @@ def setup_pir():
     GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=motion_detected)
 
 def motion_detected(channel):
+    global motion_detected_flag
     print("Motion Detected!")
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        'motion_group',
-        {
-            'type': 'motion.detected'
-        }
-    )
+    motion_detected_flag = True
+
+def check_motion_detected(request):
+    global motion_detected_flag
+
+    # Wait for motion_detected_flag to become True
+    while not motion_detected_flag:
+        time.sleep(1)
+
+    # Reset the flag
+    motion_detected_flag = False
+
+    return JsonResponse({'motion_detected': True})
 
 pir_thread = threading.Thread(target=setup_pir)
 pir_thread.daemon = True

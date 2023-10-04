@@ -21,6 +21,7 @@ urlpatterns = [
     path('activate_buzzer/', views.activate_buzzer, name='activate_buzzer'),
     path('get_temperature_dashboard/', views.get_temperature_dashboard, name='get_temperature_dashboard'),
     path('get_sensor_data/', views.get_sensor_data, name='get_sensor_data'),
+    path('check_motion_detected/', views.check_motion_detected, name='check_motion_detected'),
 
     path('camera/', live_camera_feed, name='live_camera_feed'),
     path('display_oled/', oled_view, name='oled_view'),
