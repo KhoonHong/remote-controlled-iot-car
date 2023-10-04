@@ -819,7 +819,7 @@ var EnvironmentalDataChart = (function() {
 
   // Variables
 
-  var $chart = $('#chart-environmental-data1');
+  var $chart = $('#chart-environmental-data');
 
   // Methods
 
@@ -1066,7 +1066,7 @@ function fetchDataAndUpdateChart(chartElementId) {
 }
 
 
-function updateSensorData(chartInstance) {
+function updateSensorData() {
 	$.ajax({
 		url: "/get_sensor_data/",
 		method: "GET",
@@ -1079,9 +1079,7 @@ function updateSensorData(chartInstance) {
 					newLabels.push(item.timestamp);
 				});
 				
-				chartInstance.data.labels = newLabels;
-				chartInstance.data.datasets[0].data = newData;
-				chartInstance.update();
+				return newData, newLabels;
 			}
 		}
 	});
@@ -1143,9 +1141,12 @@ function sendDataToBackend(x, y) {
 }
 
 $(document).ready(function () {
-
 	// CSRF Token needed for Django POST requests
 	var csrfToken = $("[name=csrfmiddlewaretoken]").val();
+
+	newData, newLabels = updateSensorData();
+	// Initialize your chart
+    init($('#chart-environmental-data'), newData, newLabels);
 
 	$(window).on("gamepadconnected", function (e) {
 		const gamepad = e.originalEvent.gamepad
