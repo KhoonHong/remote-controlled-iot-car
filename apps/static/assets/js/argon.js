@@ -814,60 +814,61 @@ var BarsChart = (function () {
 })();
 
 'use strict';
+var init;
 var envDataChart;
-var EnvironmentalDataChart = (function() {
+var EnvironmentalDataChart = (function () {
 
-  // Variables
+	// Variables
 
-  var $chart = $('#chart-environmental-data');
+	var $chart = $('#chart-environmental-data');
 
-  // Methods
+	// Methods
 
-  function init($chart, data, labels) {
+	init = function ($chart, data, labels) {
 
-    envDataChart = new Chart($chart, {
-      type: 'line',
-      options: {
-        scales: {
-          yAxes: [{
-            gridLines: {
-              lineWidth: 1,
-              color: 'gray',
-              zeroLineColor: 'gray'
-            },
-            ticks: {
-              callback: function(value) {
-                return value + '°C';
-              }
-            }
-          }]
-        },
-        tooltips: {
-          callbacks: {
-            label: function(item, data) {
-              var label = data.datasets[item.datasetIndex].label || '';
-              var yLabel = item.yLabel;
-              return label + ': ' + yLabel + '°C';
-            }
-          }
-        }
-      },
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Temperature',
-          data: data,
-        }]
-      }
-    });
+		envDataChart = new Chart($chart, {
+			type: 'line',
+			options: {
+				scales: {
+					yAxes: [{
+						gridLines: {
+							lineWidth: 1,
+							color: 'gray',
+							zeroLineColor: 'gray'
+						},
+						ticks: {
+							callback: function (value) {
+								return value + '°C';
+							}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: function (item, data) {
+							var label = data.datasets[item.datasetIndex].label || '';
+							var yLabel = item.yLabel;
+							return label + ': ' + yLabel + '°C';
+						}
+					}
+				}
+			},
+			data: {
+				labels: labels,
+				datasets: [{
+					label: 'Temperature',
+					data: data,
+				}]
+			}
+		});
 
-    $chart.data('chart', envDataChart);
-  };
+		$chart.data('chart', envDataChart);
+	};
 
-  if ($chart.length) {
-    // Populate 'data' and 'labels' arrays with your temperature and humidity data and labels
-    init($chart, data, labels);
-  }
+	if ($chart.length) {
+		// Populate 'data' and 'labels' arrays with your temperature and humidity data and labels
+		init($chart, data, labels);
+	}
 
 })();
 
@@ -1070,20 +1071,20 @@ function updateSensorData() {
 	$.ajax({
 		url: "/get_sensor_data/",
 		method: "GET",
-		success: function(response) {
-			if(response.status === "success") {
+		success: function (response) {
+			if (response.status === "success") {
 				let newData = [];
 				let newLabels = [];
 				response.data.forEach((item) => {
 					newData.push(item.temperature);
 					newLabels.push(item.timestamp);
 				});
-				
+
 				return newData, newLabels;
 			}
 		}
 	});
-  }
+}
 
 let gamepadConnected = false;
 let lastX = null;
@@ -1147,7 +1148,7 @@ $(document).ready(function () {
 	var newLabels = [];
 	newData, newLabels = updateSensorData();
 	// Initialize your chart
-    init($('#chart-environmental-data'), newData, newLabels);
+	init($('#chart-environmental-data'), newData, newLabels);
 
 	$(window).on("gamepadconnected", function (e) {
 		const gamepad = e.originalEvent.gamepad
@@ -1168,7 +1169,7 @@ $(document).ready(function () {
 		gamepadConnected = false;
 	});
 
-	setInterval(function() {
+	setInterval(function () {
 		updateSensorData($chart);
 	}, 60000);  // Update every 60 seconds
 
@@ -1220,14 +1221,14 @@ $(document).ready(function () {
 	const motionSocket = new WebSocket(
 		'wss://' + window.location.host + '/ws/motion/'
 	);
-	
-	motionSocket.onmessage = function(e) {
+
+	motionSocket.onmessage = function (e) {
 		const data = JSON.parse(e.data);
 		if (data.motion === 'detected') {
 			// Insert code to vibrate Xbox controller here
 		}
 	};
-	
+
 
 	$("#startBtn").click(function () {
 		$.ajax({
