@@ -1138,6 +1138,19 @@ function sendDataToBackend(x, y) {
 }
 
 
+// Function to update the gamepad state
+function updateGamepad() {
+    // Retrieve the state of the gamepad
+    gamepad = navigator.getGamepads()[0];
+
+    // Check if the "A" button is pressed (button index 0)
+    if (gamepad.buttons[0].pressed) {
+      console.log("A button pressed");
+      // You can trigger additional actions here
+    }
+  }
+
+
 $(document).ready(function () {
 	// const initialData = $('[data-toggle="chart"]').data('update');
     // const $chartElement = $('#chart-sales-dark');
@@ -1168,6 +1181,13 @@ $(document).ready(function () {
 		});
 		gamepadConnected = false;
 	});
+
+	// Update the gamepad state at a regular interval
+	setInterval(function() {
+		if (gamepadConnected) {
+		  updateGamepad();
+		}
+	  }, 100);
 
 	// setInterval(() => {
 	// 	fetchDataAndUpdateChart('#chart-sales-dark');
@@ -1214,3 +1234,4 @@ $(document).ready(function () {
 		});
 	});
 });
+
