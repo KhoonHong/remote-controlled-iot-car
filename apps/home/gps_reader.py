@@ -42,7 +42,7 @@ def read_gps():
                     store_to_firestore(lat, lng)  # Store data to Firestore
             except pynmea2.nmea.ParseError:
                 print("Error parsing NMEA sentence.")
-        time.sleep(30)  # Consider reducing or removing this sleep depending on your needs
+        time.sleep(60)  # Consider reducing or removing this sleep depending on your needs
 
 def start_reading_gps():
     thread = threading.Thread(target=read_gps)

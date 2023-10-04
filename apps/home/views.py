@@ -11,7 +11,6 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from .streamer import Camera
 from django.http import JsonResponse
-import firebase_admin
 from firebase_admin import firestore
 import time
 from .motor import *
@@ -76,14 +75,14 @@ def stop_recording(request):
 
 
 def get_temperature_humidity(request):
-    db = firestore.client()
-    docs = db.collection('dht11_data').get()
+    # db = firestore.client()
+    # docs = db.collection('dht11_data').get()
     temperature = []
     humidity = []
-    for doc in docs:
-        data = doc.to_dict()
-        temperature.append(data['temperature'])
-        humidity.append(data['humidity'])
+    # for doc in docs:
+    #     data = doc.to_dict()
+    #     temperature.append(data['temperature'])
+    #     humidity.append(data['humidity'])
     
     return JsonResponse({'temperature': temperature, 'humidity': humidity})
 
