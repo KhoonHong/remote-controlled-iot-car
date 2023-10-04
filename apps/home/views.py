@@ -193,7 +193,7 @@ def set_oled_message(request):
         # Query the latest GPS data
         query = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1)
         docs = query.stream()
-
+        
         # Initialize latitude and longitude to None
         latitude, longitude = None, None
 
@@ -201,6 +201,10 @@ def set_oled_message(request):
             data = doc.to_dict()
             latitude = data.get('latitude')
             longitude = data.get('longitude')
+
+        # Debugging: Print the latitude and longitude
+        print("Debug - Latitude:", latitude)
+        print("Debug - Longitude:", longitude)
 
         if latitude is not None and longitude is not None:
             # Get location information
@@ -212,6 +216,8 @@ def set_oled_message(request):
 
             return JsonResponse({'status': 'success', 'message': 'Location data displayed'})
         else:
+            # Debugging: This is where you are getting the 400 error.
+            print("Debug - No GPS data available.")
             return JsonResponse({'status': 'error', 'message': 'No GPS data available'}, status=400)
     elif message_type == 'motor':
         pass
