@@ -285,3 +285,10 @@ def get_location_by_coordinates(lat, long):
     country = address.get('country', "")
     state = address.get('state', "")
     return country, state
+
+def close_oled_message(request):
+    # Initialize the OLED screen
+    disp = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_bus=1, gpio=1)
+    disp.begin()
+    disp.clear()
+    disp.display()
