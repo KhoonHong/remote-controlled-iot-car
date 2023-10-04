@@ -447,6 +447,7 @@ def light_led(request):
 # Global variable to control buzzer state
 buzzer_playing = True
 
+@csrf_exempt
 def activate_buzzer(request):
     global buzzer_playing
     
