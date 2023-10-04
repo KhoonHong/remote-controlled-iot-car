@@ -500,7 +500,8 @@ def setup_pir():
     GPIO.setup(PIR_PIN, GPIO.IN)
     GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=motion_detected)
 
-def motion_detected(channel):
+def motion_detected():
+    motor_stop()
     print("Motion Detected!")
 
 pir_thread = threading.Thread(target=setup_pir)
