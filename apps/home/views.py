@@ -22,6 +22,7 @@ import Adafruit_SSD1306
 from geopy.geocoders import Nominatim
 from functools import partial
 import RPi.GPIO as GPIO
+from threading import Thread, Event
 
 
 camera = Camera()
@@ -444,48 +445,37 @@ def light_led(request):
     
     return JsonResponse({'status': 'success', 'message': 'LED toggled'})
 
-# Global variable to control buzzer state
+# Global variables
 buzzer_playing = False
-pwmBuzzer = None  # Initialize PWM object
-song_active = False  # Flag to indicate if a song is already playing
+pwmBuzzer = None
+stop_song_event = Event()
 
-@csrf_exempt
 def activate_buzzer(request):
-    global buzzer_playing, pwmBuzzer, song_active
+    global buzzer_playing, pwmBuzzer, stop_song_event
     
     status = request.POST.get('status')
     BUZZER_PIN = 19
     GPIO.setmode(GPIO.BCM)
     
-    # Set up the GPIO channel as an output
     GPIO.setup(BUZZER_PIN, GPIO.OUT)
     
     if pwmBuzzer is None:
         pwmBuzzer = GPIO.PWM(BUZZER_PIN, 1)
-
+        pwmBuzzer.start(0)
+        
     if status == 'on':
-        buzzer_playing = True
-        pwmBuzzer.start(0)  # Start the PWM
-        try:
-            play_song(pwmBuzzer)
-        finally:
-            buzzer_playing = False
-            pwmBuzzer.stop()  # Stop the PWM
-            song_active = False  # Reset the flag
+        stop_song_event.clear()
+        song_thread = Thread(target=play_song, args=(pwmBuzzer, stop_song_event))
+        song_thread.start()
     else:
-        buzzer_playing = False
-        pwmBuzzer.stop()  # Stop the PWM
-    
-    GPIO.cleanup()
+        stop_song_event.set()
+
     return JsonResponse({'status': 'success', 'message': 'Buzzer toggled'})
 
-def play_song(pwmBuzzer):
-    global song_active
-    if song_active:
-        return  # Exit if another song is already playing
-
-    song_active = True  # Set the flag
+def play_song(pwmBuzzer, stop_event):
     for i in range(len(notes)):
+        if stop_event.is_set():
+            break
         play_tone(pwmBuzzer, notes[i], durations[i])
 
 
