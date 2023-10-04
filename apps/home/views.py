@@ -152,15 +152,20 @@ songSpeed = 1.0
 def index(request):
     try:
         recent_temp, second_recent_temp = get_temperature_dashboard()
+        recent_humidity, second_recent_humidity = get_humidity_dashboard()
         
         # Calculate the difference between the two temperatures
         diff = recent_temp - second_recent_temp
+        humidify_diff = recent_humidity - second_recent_humidity
 
         context = {
             'segment': 'index',
             'recent_temp': recent_temp,
             'second_recent_temp': second_recent_temp,
-            'diff': diff
+            'diff': diff,
+            'recent_humidity': recent_humidity,
+            'second_recent_humidity': second_recent_humidity,
+            'humidify_diff': humidify_diff,
         }
 
         html_template = loader.get_template('home/index.html')
@@ -554,3 +559,31 @@ def get_temperature_dashboard():
 
     except Exception as e:
         print(f"Error retrieving temperature: {e}")
+
+
+def get_humidity_dashboard():
+    try:
+        # Initialize Firestore client
+        db = firestore.client()
+        
+        # Query the database, ordering by timestamp and limiting to the 2 most recent entries
+        docs = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(2).stream()
+        
+        # Initialize list to hold humidity data
+        humidities = []
+        
+        # Loop through query results and store in the list
+        for doc in docs:
+            doc_dict = doc.to_dict()
+            humidities.append(doc_dict.get('humidity'))
+        
+        # Check if there are enough readings
+        if len(humidities) < 2:
+            return None, None
+        
+        # Extract the most recent and second most recent humidity readings
+        return humidities[0], humidities[1]
+
+    except Exception as e:
+        print(f"Error retrieving humidity: {e}")
+
