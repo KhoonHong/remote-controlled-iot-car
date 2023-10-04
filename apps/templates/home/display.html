@@ -190,6 +190,13 @@
     });
 
     $('.single-checkbox').click(function () {
+      // Iterate through all span elements with the class 'badge'
+      $('span.badge').each(function () {
+        // Replace the content of each matching span element with the new HTML
+        $(this).html('<i class="bg-danger"></i><span class="status">Inactive</span>');
+      });
+
+
       // CSRF Token needed for Django POST requests
       var csrfToken = $("[name=csrfmiddlewaretoken]").val();
 
@@ -199,6 +206,8 @@
       var matchingSpan = $('span#' + oled_type);
       // Replace the content of the matching span element with the new HTML
       matchingSpan.html('<i class="bg-warning"></i><span class="status">Starting</span>');
+
+
 
       if ($('.single-checkbox:checked').length == 0) {
         Swal.fire({
