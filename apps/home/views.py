@@ -421,9 +421,9 @@ def close_oled_message(request):
 
     return JsonResponse({'status': 'success', 'message': 'OLED cleared'})
 
-
+@csrf_exempt
 def light_led(request):   
-    status = request.GET.get('status')
+    status = request.POST.get('status')
     # Set the GPIO mode
     GPIO.setmode(GPIO.BCM)
 
@@ -451,7 +451,7 @@ buzzer_playing = True
 def activate_buzzer(request):
     global buzzer_playing
     
-    status = request.GET.get('status')
+    status = request.POST.get('status')
     BUZZER_PIN = 19
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(BUZZER_PIN, GPIO.OUT)
