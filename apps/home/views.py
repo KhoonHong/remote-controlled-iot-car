@@ -316,6 +316,15 @@ def close_oled_message(request):
 
 def light_led(request):   
     status = request.POST.get('status')
+    # Set the GPIO mode
+    GPIO.setmode(GPIO.BCM)
+
+    # Define the LED pin
+    LED_PIN = 20
+
+    # Set up the LED pin as an output
+    GPIO.setup(LED_PIN, GPIO.OUT)
+    
     if status == 'on':
         # Turn the LED on
         GPIO.output(LED_PIN, GPIO.HIGH)
