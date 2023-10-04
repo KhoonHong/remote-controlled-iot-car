@@ -23,6 +23,7 @@ from geopy.geocoders import Nominatim
 from functools import partial
 import RPi.GPIO as GPIO
 from threading import Thread, Event
+import threading
 
 
 camera = Camera()
@@ -490,3 +491,18 @@ def play_tone(pwmBuzzer, frequency, duration):
     time.sleep(duration * songSpeed / 1000.0)  # Convert duration from ms to s
     pwmBuzzer.ChangeDutyCycle(0)  # Silence the buzzer
     time.sleep(0.05)  # A short delay between notes
+
+
+
+def setup_pir():
+    GPIO.setmode(GPIO.BCM)
+    PIR_PIN = 16
+    GPIO.setup(PIR_PIN, GPIO.IN)
+    GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=motion_detected)
+
+def motion_detected(channel):
+    print("Motion Detected!")
+
+pir_thread = threading.Thread(target=setup_pir)
+pir_thread.daemon = True
+pir_thread.start()
