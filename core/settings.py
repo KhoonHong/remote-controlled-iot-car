@@ -31,7 +31,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.home',  # Enable the inner home (home)
     'sslserver',
+    'channels',
 ]
+
+ASGI_APPLICATION = 'IOT_WEB_PROJECT.routing.application'
+
+# Configure channel layers to use Redis
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

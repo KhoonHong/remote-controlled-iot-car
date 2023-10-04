@@ -1217,6 +1217,29 @@ $(document).ready(function () {
 		}
 	}, 100);
 
+	// Initialize WebSocket connection
+	const motionSocket = new WebSocket('ws://0.0.0.0:8000/ws/motion/');
+
+	// Listen for messages
+	motionSocket.addEventListener('message', function(event) {
+		let data = JSON.parse(event.data);
+		if (data.motion === 'detected') {
+			// Trigger Xbox controller vibration here
+			if ("getGamepads" in navigator) {
+				let gamepads = navigator.getGamepads();
+				if (gamepads[0]) {
+					gamepads[0].vibrationActuator.playEffect("dual-rumble", {
+						startDelay: 0,
+						duration: 1000,
+						weakMagnitude: 1.0,
+						strongMagnitude: 1.0
+					});
+				}
+			}
+		}
+	});
+
+
 	// setInterval(() => {
 	// 	fetchDataAndUpdateChart('#chart-sales-dark');
 	// }, 30000);  // 10000 milliseconds = 10 seconds

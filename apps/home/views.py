@@ -24,7 +24,8 @@ from functools import partial
 import RPi.GPIO as GPIO
 from threading import Thread, Event
 import threading
-
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 camera = Camera()
 
@@ -492,8 +493,6 @@ def play_tone(pwmBuzzer, frequency, duration):
     pwmBuzzer.ChangeDutyCycle(0)  # Silence the buzzer
     time.sleep(0.05)  # A short delay between notes
 
-
-
 def setup_pir():
     GPIO.setmode(GPIO.BCM)
     PIR_PIN = 16
@@ -501,8 +500,14 @@ def setup_pir():
     GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=motion_detected)
 
 def motion_detected():
-    motor_stop()
     print("Motion Detected!")
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        'motion_group',
+        {
+            'type': 'motion.detected'
+        }
+    )
 
 pir_thread = threading.Thread(target=setup_pir)
 pir_thread.daemon = True
