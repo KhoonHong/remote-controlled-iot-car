@@ -234,20 +234,31 @@
       var csrfToken = $("[name=csrfmiddlewaretoken]").val();
       var oled_type = $(this).val()
       Swal.fire({
+
+        
+        didOpen: (toast) => {
+          Swal.showLoading();
+        },
+      })
+      Swal.fire({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timerProgressBar: true,
         iconColor: 'white',
         customClass: {
           popup: 'colored-toast'
         },
-        html: '<div>Loading... <i class="fa fa-spinner fa-spin"></i></div>',
-        didOpen: (toast) => {
-          // Do something here if needed
+        title: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log('I was closed by the timer')
         }
       })
-
       // The AJAX request
       $.ajax({
         url: "/set_oled_message/",  // Your Django URL endpoint
