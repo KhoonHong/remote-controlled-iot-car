@@ -240,8 +240,6 @@
         data: { "option": $(this.target).val() },  // Data sent with the POST request
         headers: { "X-CSRFToken": csrfToken },  // CSRF token
         success: function (response) {
-          // Successful response handler
-          console.log("Successfully received data:", response);
           Toast.fire ({
             icon: 'success',
             text: oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + ' applied successfully!',

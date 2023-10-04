@@ -205,7 +205,7 @@ def set_oled_message(request):
         display_location(draw, font, width, height, disp, image, longitude, latitude, location_name)
     elif message_type == 'motor':
         pass
-
+    print("Message sent to OLED.")
     return JsonResponse({'status': 'success'})
 
 def display_humidity(draw, font, width, height, disp, image, humidity):   
