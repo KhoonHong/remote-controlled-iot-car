@@ -233,8 +233,20 @@
       // CSRF Token needed for Django POST requests
       var csrfToken = $("[name=csrfmiddlewaretoken]").val();
       var oled_type = $(this).val()
-      Toast.fire({
-        title: 'Loading...',
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        iconColor: 'white',
+        customClass: {
+          popup: 'colored-toast'
+          },
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        },
         text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
         didOpen: () => {
           Swal.showLoading();
