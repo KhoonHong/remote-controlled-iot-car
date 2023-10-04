@@ -233,7 +233,9 @@
       // CSRF Token needed for Django POST requests
       var csrfToken = $("[name=csrfmiddlewaretoken]").val();
 
-      // check if any checkbox is checked
+      // Get the value for the OLED type
+      var oled_type = $(this).val();
+
       if ($('.single-checkbox:checked').length == 0) {
         Swal.fire({
           toast: true,
@@ -242,65 +244,65 @@
           text: 'Closing OLED display...',
           timerProgressBar: true,
           didOpen: () => {
-            Swal.showLoading()
+            Swal.showLoading();
           }
-        })
+        });
+
+        // AJAX call for closing OLED
         $.ajax({
-          url: "/close_oled_message/",  // Your Django URL endpoint
+          url: "/close_oled_message/",
           type: "POST",
-          data: { "option": oled_type },  // Data sent with the POST request
-          headers: { "X-CSRFToken": csrfToken },  // CSRF token
+          data: { "option": oled_type },
+          headers: { "X-CSRFToken": csrfToken },
           success: function (response) {
-            Toast.close();
-            Toast.fire({
+            Swal.close();
+            Swal.fire({
               icon: 'success',
               text: 'OLED display closed successfully!',
-            })
+            });
           },
           error: function (xhr, status, error) {
-            // Error response handler
             console.log("An error occurred:", error);
-            Toast.fire({
+            Swal.fire({
+              icon: 'error',
+              text: 'Failed to apply display option: ' + error,
+            });
+          }
+        });
+      } else {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        // AJAX call for setting OLED
+        $.ajax({
+          url: "/set_oled_message/",
+          type: "POST",
+          data: { "option": oled_type },
+          headers: { "X-CSRFToken": csrfToken },
+          success: function (response) {
+            Swal.close();
+            Swal.fire({
+              icon: 'success',
+              text: oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + ' applied successfully!',
+            });
+          },
+          error: function (xhr, status, error) {
+            console.log("An error occurred:", error);
+            Swal.fire({
               icon: 'error',
               text: 'Failed to apply display option: ' + error,
             });
           }
         });
       }
-
-      var oled_type = $(this).val()
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        text: 'Applying ' + oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + '...',
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading()
-        }
-      })
-
-      $.ajax({
-        url: "/set_oled_message/",  // Your Django URL endpoint
-        type: "POST",
-        data: { "option": oled_type },  // Data sent with the POST request
-        headers: { "X-CSRFToken": csrfToken },  // CSRF token
-        success: function (response) {
-          Toast.close();
-          Toast.fire({
-            icon: 'success',
-            text: oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + ' applied successfully!',
-          })
-        },
-        error: function (xhr, status, error) {
-          // Error response handler
-          console.log("An error occurred:", error);
-          Toast.fire({
-            icon: 'error',
-            text: 'Failed to apply display option: ' + error,
-          });
-        }
-      });
     });
   });
 
