@@ -59,7 +59,7 @@
                   <input type="checkbox" class="single-checkbox" name="optionCheckbox" value="temperature" />
                 </td>
                 <td>
-                  <span class="badge badge-dot mr-4">
+                  <span class="badge badge-dot mr-4" id="temperature">
                     <i class="bg-warning"></i>
                     <span class="status">Starting</span>
                   </span>
@@ -97,7 +97,7 @@
                   <input type="checkbox" class="single-checkbox" name="optionCheckbox" value="humidity" />
                 </td>
                 <td>
-                  <span class="badge badge-dot mr-4">
+                  <span class="badge badge-dot mr-4" id="humidity">
                     <i class="bg-success"></i>
                     <span class="status">Active</span>
                   </span>
@@ -135,7 +135,7 @@
                   <input type="checkbox" class="single-checkbox" name="optionCheckbox" value="location" />
                 </td>
                 <td>
-                  <span class="badge badge-dot mr-4">
+                  <span class="badge badge-dot mr-4" id="location">
                     <i class="bg-danger"></i>
                     <span class="status">Inactive</span>
                   </span>
@@ -175,7 +175,7 @@
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  $(document).ready(function () {
     let checkboxes = document.querySelectorAll('.single-checkbox');
     checkboxes.forEach(function (checkbox) {
       checkbox.addEventListener('change', function () {
@@ -188,15 +188,17 @@
         }
       });
     });
-  });
 
-  $(document).ready(function () {
     $('.single-checkbox').click(function () {
       // CSRF Token needed for Django POST requests
       var csrfToken = $("[name=csrfmiddlewaretoken]").val();
 
       // Get the value for the OLED type
       var oled_type = $(this).val();
+
+      var matchingSpan = $('span#' + oled_type);
+      // Replace the content of the matching span element with the new HTML
+      matchingSpan.html('<i class="bg-warning"></i><span class="status">Starting</span>');
 
       if ($('.single-checkbox:checked').length == 0) {
         Swal.fire({
@@ -222,6 +224,7 @@
               icon: 'success',
               text: 'OLED display closed successfully!',
             });
+            matchingSpan.html('<i class="bg-danger"></i><span class="status">Inactive</span>');
           },
           error: function (xhr, status, error) {
             console.log("An error occurred:", error);
@@ -229,6 +232,7 @@
               icon: 'error',
               text: 'Failed to apply display option: ' + error,
             });
+            matchingSpan.html('<i class="bg-success"></i><span class="status">Active</span>');
           }
         });
       } else {
@@ -255,6 +259,7 @@
               icon: 'success',
               text: oled_type.charAt(0).toUpperCase() + oled_type.slice(1) + ' applied successfully!',
             });
+            matchingSpan.html('<i class="bg-success"></i><span class="status">Active</span>');
           },
           error: function (xhr, status, error) {
             console.log("An error occurred:", error);
@@ -262,6 +267,7 @@
               icon: 'error',
               text: 'Failed to apply display option: ' + error,
             });
+            matchingSpan.html('<i class="bg-danger"></i><span class="status">Inactive</span>');
           }
         });
       }
