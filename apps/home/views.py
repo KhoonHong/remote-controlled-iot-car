@@ -171,7 +171,7 @@ def index(request):
             if geo_point:
                 latitude = geo_point.latitude
                 longitude = geo_point.longitude
-
+        location_name = get_location_by_coordinates(latitude, longitude)
         context = {
             'segment': 'index',
             'recent_temp': recent_temp,
@@ -180,8 +180,8 @@ def index(request):
             'recent_humidity': recent_humidity,
             'second_recent_humidity': second_recent_humidity,
             'humidify_diff': humidify_diff,
-            "location": get_location_by_coordinates(latitude, longitude),
-            "coordinates": f"{latitude}, {longitude}"
+            "location": f"{location_name[0]}, {location_name[1]}",
+            "coordinates": f"{latitude:.5f}, {longitude:.5f}"
         }
 
         html_template = loader.get_template('home/index.html')
