@@ -815,78 +815,59 @@ var BarsChart = (function () {
 
 'use strict';
 
-//
-// Sales chart
-//
+var EnvironmentalDataChart = (function() {
 
-var SalesChart = (function () {
+  // Variables
 
-	// Variables
+  var $chart = $('#chart-environmental-data1');
 
-	var $chart = $('#chart-sales-dark');
+  // Methods
 
+  function init($chart, data, labels) {
 
-	// Methods
+    var envDataChart = new Chart($chart, {
+      type: 'line',
+      options: {
+        scales: {
+          yAxes: [{
+            gridLines: {
+              lineWidth: 1,
+              color: 'gray',
+              zeroLineColor: 'gray'
+            },
+            ticks: {
+              callback: function(value) {
+                return value + '°C';
+              }
+            }
+          }]
+        },
+        tooltips: {
+          callbacks: {
+            label: function(item, data) {
+              var label = data.datasets[item.datasetIndex].label || '';
+              var yLabel = item.yLabel;
+              return label + ': ' + yLabel + '°C';
+            }
+          }
+        }
+      },
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Temperature',
+          data: data,
+        }]
+      }
+    });
 
-	function init($chart) {
+    $chart.data('chart', envDataChart);
+  };
 
-		var salesChart = new Chart($chart, {
-			type: 'line',
-			options: {
-				scales: {
-					yAxes: [{
-						gridLines: {
-							lineWidth: 1,
-							color: Charts.colors.gray[900],
-							zeroLineColor: Charts.colors.gray[900]
-						},
-						ticks: {
-							callback: function (value) {
-								if (!(value % 10)) {
-									return '$' + value + 'k';
-								}
-							}
-						}
-					}]
-				},
-				tooltips: {
-					callbacks: {
-						label: function (item, data) {
-							var label = data.datasets[item.datasetIndex].label || '';
-							var yLabel = item.yLabel;
-							var content = '';
-
-							if (data.datasets.length > 1) {
-								content += '<span class="popover-body-label mr-auto">' + label + '</span>';
-							}
-
-							content += '<span class="popover-body-value">$' + yLabel + 'k</span>';
-							return content;
-						}
-					}
-				}
-			},
-			data: {
-				labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-				datasets: [{
-					label: 'Performance',
-					data: [0, 20, 10, 30, 15, 40, 20, 60, 60]
-				}]
-			}
-		});
-
-		// Save to jQuery object
-
-		$chart.data('chart', salesChart);
-
-	};
-
-
-	// Events
-
-	if ($chart.length) {
-		init($chart);
-	}
+  if ($chart.length) {
+    // Populate 'data' and 'labels' arrays with your temperature and humidity data and labels
+    init($chart, data, labels);
+  }
 
 })();
 
@@ -1084,6 +1065,28 @@ function fetchDataAndUpdateChart(chartElementId) {
 		});
 }
 
+
+function updateSensorData(chartInstance) {
+	$.ajax({
+		url: "/get_sensor_data/",
+		method: "GET",
+		success: function(response) {
+			if(response.status === "success") {
+				let newData = [];
+				let newLabels = [];
+				response.data.forEach((item) => {
+					newData.push(item.temperature);
+					newLabels.push(item.timestamp);
+				});
+				
+				chartInstance.data.labels = newLabels;
+				chartInstance.data.datasets[0].data = newData;
+				chartInstance.update();
+			}
+		}
+	});
+  }
+
 let gamepadConnected = false;
 let lastX = null;
 let lastY = null;
@@ -1140,16 +1143,7 @@ function sendDataToBackend(x, y) {
 }
 
 $(document).ready(function () {
-	// const initialData = $('[data-toggle="chart"]').data('update');
-	// const $chartElement = $('#chart-sales-dark');
-	// const ctx = $chartElement[0].getContext('2d');
 
-	// // Initialize the Chart.js chart
-	// const myChart = new Chart(ctx, {
-	//     type: 'line',
-	//     data: initialData.data,
-	//     // Add other chart options if needed
-	// });
 	// CSRF Token needed for Django POST requests
 	var csrfToken = $("[name=csrfmiddlewaretoken]").val();
 
@@ -1171,6 +1165,10 @@ $(document).ready(function () {
 		});
 		gamepadConnected = false;
 	});
+
+	setInterval(function() {
+		updateSensorData($chart);
+	}, 60000);  // Update every 60 seconds
 
 	function updateGamepad() {
 		let gamepad = navigator.getGamepads()[0];
@@ -1228,12 +1226,6 @@ $(document).ready(function () {
 		}
 	};
 	
-
-
-	// setInterval(() => {
-	// 	fetchDataAndUpdateChart('#chart-sales-dark');
-	// }, 30000);  // 10000 milliseconds = 10 seconds
-
 
 	$("#startBtn").click(function () {
 		$.ajax({
