@@ -659,13 +659,18 @@ def get_sensor_data(request):
 
         for doc in docs:
             doc_dict = doc.to_dict()
-            hour = doc_dict['timestamp'].hour  # Extracting hour from timestamp
+            timestamp_str = doc_dict['timestamp']  # Assuming the timestamp is in string format
+            timestamp = datetime.fromisoformat(timestamp_str)
+            hour = timestamp.hour  # Extracting hour from timestamp
             hourly_data[hour].append(doc_dict['humidity'])
 
         # Calculate mean humidity for each hour
         hourly_mean = {hour: mean(values) for hour, values in hourly_data.items()}
 
-        return JsonResponse({"status": "success", "data": hourly_mean})
+        # Convert it back to the original format
+        averaged_data = [{'hour': hour, 'humidity': mean_humidity} for hour, mean_humidity in hourly_mean.items()]
+
+        return JsonResponse({"status": "success", "data": averaged_data})
     except Exception as e:
         print(f"Error fetching sensor data: {e}")
         return JsonResponse({"status": "error", "message": "Could not fetch data"})
