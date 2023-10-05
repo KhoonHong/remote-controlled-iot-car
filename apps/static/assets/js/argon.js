@@ -849,8 +849,8 @@ var BarsChart = (function () {
 					let newData = [];
 					let newLabels = [];
 					response.data.forEach((item) => {
-						newData.push(item.humidity);
-						newLabels.push(item.timestamp);
+						newData.push(item.mean_humidity);
+						newLabels.push(item.hour);
 					});
 					updateChart(newData, newLabels);
 				}
