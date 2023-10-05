@@ -947,20 +947,34 @@ var EnvironmentalDataChart = (function () {
 			url: "/get_sensor_data/",
 			method: "GET",
 			success: function (response) {
+				console.log("Response received:", response);
 				if (response.status === "success") {
 					let newData = [];
 					let newLabels = [];
-					response.data.forEach((item) => {
-						newData.push(item.temperature);
-						newLabels.push((item.timestamp));
-					});
-					init($chart, newData, newLabels);
+					if (Array.isArray(response.data)) {
+						console.log("Data is an array.");
+						response.data.forEach((item) => {
+							newData.push(item.temperature);
+							newLabels.push(new Date(item.timestamp).toISOString());
+						});
+						console.log("New Data:", newData);
+						console.log("New Labels:", newLabels);
+						updateChart(newData, newLabels);
+					} else {
+						console.log("Data is not an array.");
+					}
 				}
+			},
+			error: function (error) {
+				console.log("Error:", error);
 			}
 		});
 		// Populate 'data' and 'labels' arrays with your temperature and humidity data and labels
 
 	}
+
+
+	
 
 })();
 
