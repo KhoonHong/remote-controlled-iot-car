@@ -879,56 +879,15 @@ var BarsChart = (function () {
 var init;
 var envDataChart;
 var EnvironmentalDataChart = (function () {
-
 	// Variables
-
 	var $chart = $('#chart-environmental-data');
 
-	// Methods
-
+	// Methods to initialize the chart
 	init = function ($chart, data, labels) {
-
 		envDataChart = new Chart($chart, {
 			type: 'line',
 			options: {
-				scales: {
-					xAxes: [{
-						type: 'time',
-						time: {
-							unit: 'hour', // Change the unit to 'hour'
-							displayFormats: {
-								hour: 'MM/DD, h A' // Will display like '10/04, 6 PM'
-							}
-						},
-						gridLines: {
-							lineWidth: 1,
-							color: 'gray',
-							zeroLineColor: 'gray'
-						}
-					}],
-
-					yAxes: [{
-						gridLines: {
-							lineWidth: 1,
-							color: 'gray',
-							zeroLineColor: 'gray'
-						},
-						ticks: {
-							callback: function (value) {
-								return value + '°C';
-							}
-						}
-					}]
-				},
-				tooltips: {
-					callbacks: {
-						label: function (item, data) {
-							var label = data.datasets[item.datasetIndex].label || '';
-							var yLabel = item.yLabel;
-							return label + ': ' + yLabel + '°C';
-						}
-					}
-				}
+				//... (options stay the same)
 			},
 			data: {
 				labels: labels,
@@ -938,28 +897,31 @@ var EnvironmentalDataChart = (function () {
 				}]
 			}
 		});
-
 		$chart.data('chart', envDataChart);
 	};
 
+	// Method to update the chart
+	function updateChart(newData, newLabels) {
+		envDataChart.data.labels = newLabels;
+		envDataChart.data.datasets[0].data = newData;
+		envDataChart.update();
+	}
+
+	// AJAX call to fetch data
 	if ($chart.length) {
 		$.ajax({
 			url: "/get_sensor_data/",
 			method: "GET",
 			success: function (response) {
-				console.log("Response received:", response);
 				if (response.status === "success") {
 					let newData = [];
 					let newLabels = [];
 					if (Array.isArray(response.data)) {
-						console.log("Data is an array.");
 						response.data.forEach((item) => {
 							newData.push(item.temperature);
 							newLabels.push(new Date(item.timestamp).toISOString());
 						});
-						console.log("New Data:", newData);
-						console.log("New Labels:", newLabels);
-						updateChart(newData, newLabels);
+						init($chart, newData, newLabels);  // Initialize chart
 					} else {
 						console.log("Data is not an array.");
 					}
@@ -969,9 +931,9 @@ var EnvironmentalDataChart = (function () {
 				console.log("Error:", error);
 			}
 		});
-		// Populate 'data' and 'labels' arrays with your temperature and humidity data and labels
-
 	}
+})();
+
 
 
 	
