@@ -887,7 +887,44 @@ var EnvironmentalDataChart = (function () {
 		envDataChart = new Chart($chart, {
 			type: 'line',
 			options: {
-				//... (options stay the same)
+				scales: {
+					xAxes: [{
+						type: 'time',
+						time: {
+							unit: 'hour', // Change the unit to 'hour'
+							displayFormats: {
+								hour: 'MM/DD, h A' // Will display like '10/04, 6 PM'
+							}
+						},
+						gridLines: {
+							lineWidth: 1,
+							color: 'gray',
+							zeroLineColor: 'gray'
+						}
+					}],
+
+					yAxes: [{
+						gridLines: {
+							lineWidth: 1,
+							color: 'gray',
+							zeroLineColor: 'gray'
+						},
+						ticks: {
+							callback: function (value) {
+								return value + '°C';
+							}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: function (item, data) {
+							var label = data.datasets[item.datasetIndex].label || '';
+							var yLabel = item.yLabel;
+							return label + ': ' + yLabel + '°C';
+						}
+					}
+				}
 			},
 			data: {
 				labels: labels,
