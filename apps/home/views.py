@@ -674,7 +674,7 @@ def get_sensor_data(request):
             timestamp = doc_dict['timestamp']
             hour = timestamp.hour
             hourly_data_humidity[hour].append(doc_dict['humidity'])
-            hourly_data_temperature[hour].append(doc_dict['temperature'])
+            hourly_data_temperature[hour].append(doc_dict['temperature '])
 
         # Calculate mean for each hour for humidity and temperature
         hourly_mean_humidity = {hour: mean(values) for hour, values in hourly_data_humidity.items()}
