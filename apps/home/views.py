@@ -24,8 +24,7 @@ from functools import partial
 import RPi.GPIO as GPIO
 from threading import Thread, Event
 import threading
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+from datetime import datetime
 from collections import defaultdict
 from statistics import mean
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseServerError
