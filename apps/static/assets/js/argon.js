@@ -1294,6 +1294,11 @@ $(document).ready(function () {
 			// Trigger Buzzer off
 			triggerAction('off', 'activate_buzzer');
 		}
+
+		if (gamepad.buttons[2].pressed) {
+			console.log("X button pressed!");
+			takeScreenshot();
+		}
 	}
 
 	function triggerAction(status, endpoint) {
@@ -1370,7 +1375,8 @@ $(document).ready(function () {
 		});
 	});
 
-	$("#snapBtn").click(function () {
+
+	function takeScreenshot() {
 		$.ajax({
 			url: '/take_screenshot/',
 			method: 'GET',
@@ -1381,6 +1387,10 @@ $(document).ready(function () {
 				});
 			}
 		});
+	}
+	
+	$("#snapBtn").click(function () {
+		takeScreenshot();
 	});
 });
 
