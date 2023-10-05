@@ -670,6 +670,7 @@ def get_sensor_data(request):
 
         for doc in docs:
             doc_dict = doc.to_dict()
+            print(doc_dict)
             timestamp = doc_dict['timestamp']
             hour = timestamp.hour
             hourly_data_humidity[hour].append(doc_dict['humidity'])
