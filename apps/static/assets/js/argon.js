@@ -1129,21 +1129,6 @@ function vibrateController(gamepad) {
 		});
 }
 
-function fetchDataAndUpdateChart(chartElementId) {
-	fetch('/get_temperature_humidity/')
-		.then(response => response.json())
-		.then(data => {
-			const temperatureData = data.temperature;
-			const humidityData = data.humidity;
-
-			const $chartElement = $('#chart-sales-dark');
-			const $chart = $chartElement.data('chart');
-			$chart.data.datasets[0].data = temperatureData;  // Assuming temperature is the first dataset
-			$chart.data.datasets[1].data = humidityData;    // Assuming humidity is the second dataset
-			$chart.update();
-		});
-}
-
 
 function updateSensorData() {
 	$.ajax({
