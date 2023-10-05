@@ -967,6 +967,7 @@ var EnvironmentalDataChart = (function () {
 						console.log("Data is not an array.");
 					}
 				}
+				console.log("Response received:", response);
 			},
 			error: function (error) {
 				console.log("Error:", error);
