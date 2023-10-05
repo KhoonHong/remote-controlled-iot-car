@@ -794,7 +794,7 @@ var BarsChart = (function () {
 				scales: {
 					yAxes: [{
 						ticks: {
-							callback: function(value) {
+							callback: function (value) {
 								return value + ' g/kg';
 							}
 						}
@@ -802,21 +802,21 @@ var BarsChart = (function () {
 					xAxes: [{
 						type: 'time',
 						time: {
-						  unit: 'hour', // Change the unit to 'hour'
-						  displayFormats: {
-							hour: 'MM/DD, h A' // Will display like '10/04, 6 PM'
-						  }
+							unit: 'hour', // Change the unit to 'hour'
+							displayFormats: {
+								hour: 'MM/DD, h A' // Will display like '10/04, 6 PM'
+							}
 						},
 						gridLines: {
-						  lineWidth: 1,
-						  color: 'gray',
-						  zeroLineColor: 'gray'
+							lineWidth: 1,
+							color: 'gray',
+							zeroLineColor: 'gray'
 						}
-					  }]
+					}]
 				},
 				tooltips: {
 					callbacks: {
-						label: function(item, data) {
+						label: function (item, data) {
 							var label = data.datasets[item.datasetIndex].label || '';
 							var yLabel = item.yLabel;
 							return label + ': ' + yLabel + ' g/kg';
@@ -827,7 +827,7 @@ var BarsChart = (function () {
 		});
 		$chart.data('chart', ordersChart);
 	}
-	
+
 
 	// Update chart
 	function updateChart(newData, newLabels) {
@@ -836,31 +836,40 @@ var BarsChart = (function () {
 		ordersChart.update();
 	}
 
-	// Initialize the chart with empty data
-if ($chart.length) {
-    initChart($chart, [], []);
 
-    // AJAX request to populate data
-    $.ajax({
-        url: "/get_sensor_data/",
-        method: "GET",
-        success: function (response) {
-            if (response.status === "success") {
-                let newData = [];
-                let newLabels = [];
-                if (Array.isArray(response.data)) {
-                    response.data.forEach((item) => {
-                        newData.push(item.humidity);
-                        newLabels.push(new Date(item.timestamp).toISOString()); // Convert to ISO string for Chart.js
-                    });
-                    updateChart(newData, newLabels);
-                } else {
-                    console.log("Data is not an array");
-                }
-            }
-        }
-    });
-}
+	// Initialize the chart with empty data
+	if ($chart.length) {
+		initChart($chart, [], []);
+		console.log("Chart initialized.");
+
+		// AJAX request to populate data
+		$.ajax({
+			url: "/get_sensor_data/",
+			method: "GET",
+			success: function (response) {
+				console.log("Response received:", response);
+				if (response.status === "success") {
+					let newData = [];
+					let newLabels = [];
+					if (Array.isArray(response.data)) {
+						console.log("Data is an array.");
+						response.data.forEach((item) => {
+							newData.push(item.humidity);
+							newLabels.push(new Date(item.timestamp).toISOString());
+						});
+						console.log("New Data:", newData);
+						console.log("New Labels:", newLabels);
+						updateChart(newData, newLabels);
+					} else {
+						console.log("Data is not an array.");
+					}
+				}
+			},
+			error: function (error) {
+				console.log("Error:", error);
+			}
+		});
+	}
 
 
 })();
@@ -886,18 +895,18 @@ var EnvironmentalDataChart = (function () {
 					xAxes: [{
 						type: 'time',
 						time: {
-						  unit: 'hour', // Change the unit to 'hour'
-						  displayFormats: {
-							hour: 'MM/DD, h A' // Will display like '10/04, 6 PM'
-						  }
+							unit: 'hour', // Change the unit to 'hour'
+							displayFormats: {
+								hour: 'MM/DD, h A' // Will display like '10/04, 6 PM'
+							}
 						},
 						gridLines: {
-						  lineWidth: 1,
-						  color: 'gray',
-						  zeroLineColor: 'gray'
+							lineWidth: 1,
+							color: 'gray',
+							zeroLineColor: 'gray'
 						}
-					  }],
-					  
+					}],
+
 					yAxes: [{
 						gridLines: {
 							lineWidth: 1,
@@ -950,19 +959,19 @@ var EnvironmentalDataChart = (function () {
 			}
 		});
 		// Populate 'data' and 'labels' arrays with your temperature and humidity data and labels
-		
+
 	}
 
 })();
 
 function formatDateTime(dateTimeStr) {
-    const date = new Date(dateTimeStr);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
+	const date = new Date(dateTimeStr);
+	const year = date.getFullYear();
+	const month = date.getMonth() + 1;
+	const day = date.getDate();
+	const hours = date.getHours();
+	const minutes = date.getMinutes();
+	return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
 //
@@ -1315,7 +1324,7 @@ $(document).ready(function () {
 		try {
 			const response = await fetch('/check_motion_detected/');
 			const data = await response.json();
-			
+
 			if (data.motion_detected) {
 				// Code to vibrate the Xbox controller
 				const gamepads = navigator.getGamepads();
@@ -1334,7 +1343,7 @@ $(document).ready(function () {
 			checkMotionDetected();
 		}
 	}
-	
+
 	// Start the long polling
 	checkMotionDetected();
 
