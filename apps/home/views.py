@@ -664,19 +664,25 @@ def get_sensor_data(request):
     try:
         db = firestore.client()
         docs = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING).stream()
-        hourly_data = defaultdict(list)
+        
+        hourly_data_humidity = defaultdict(list)
+        hourly_data_temperature = defaultdict(list)
 
         for doc in docs:
             doc_dict = doc.to_dict()
-            timestamp = doc_dict['timestamp']  # No need to convert, already a datetime-like object
+            timestamp = doc_dict['timestamp']
             hour = timestamp.hour
-            hourly_data[hour].append(doc_dict['humidity'])
+            hourly_data_humidity[hour].append(doc_dict['humidity'])
+            hourly_data_temperature[hour].append(doc_dict['temp'])
 
-        # Calculate mean for each hour
-        hourly_mean = {hour: mean(values) for hour, values in hourly_data.items()}
-        
+        # Calculate mean for each hour for humidity and temperature
+        hourly_mean_humidity = {hour: mean(values) for hour, values in hourly_data_humidity.items()}
+        hourly_mean_temperature = {hour: mean(values) for hour, values in hourly_data_temperature.items()}
+
         # Convert it back to the original format
-        averaged_data = [{'timestamp': datetime(year=timestamp.year, month=timestamp.month, day=timestamp.day, hour=hour).isoformat(), 'humidity': mean_humidity} for hour, mean_humidity in hourly_mean.items()]
+        averaged_data = [{'timestamp': datetime(year=timestamp.year, month=timestamp.month, day=timestamp.day, hour=hour).isoformat(),
+                          'humidity': mean_humidity,
+                          'temperature': hourly_mean_temperature.get(hour, None)} for hour, mean_humidity in hourly_mean_humidity.items()]
 
         return JsonResponse({"status": "success", "data": averaged_data})
     except Exception as e:
