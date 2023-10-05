@@ -656,7 +656,7 @@ def get_sensor_data(request):
 
         for doc in docs:
             doc_dict = doc.to_dict()
-            timestamp = doc_dict['timestamp'].to_datetime()  # Convert Firestore timestamp to Python datetime
+            timestamp = doc_dict['timestamp']  # No need to convert, already a datetime-like object
             hour = timestamp.hour
             hourly_data[hour].append(doc_dict['humidity'])
 
