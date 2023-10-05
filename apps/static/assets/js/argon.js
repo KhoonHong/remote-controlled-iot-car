@@ -837,26 +837,31 @@ var BarsChart = (function () {
 	}
 
 	// Initialize the chart with empty data
-	if ($chart.length) {
-		initChart($chart, [], []);
+if ($chart.length) {
+    initChart($chart, [], []);
 
-		// AJAX request to populate data
-		$.ajax({
-			url: "/get_sensor_data/",
-			method: "GET",
-			success: function (response) {
-				if (response.status === "success") {
-					let newData = [];
-					let newLabels = [];
-					response.data.forEach((item) => {
-						newData.push(item.mean_humidity);
-						newLabels.push(item.hour);
-					});
-					updateChart(newData, newLabels);
-				}
-			}
-		});
-	}
+    // AJAX request to populate data
+    $.ajax({
+        url: "/get_sensor_data/",
+        method: "GET",
+        success: function (response) {
+            if (response.status === "success") {
+                let newData = [];
+                let newLabels = [];
+                if (Array.isArray(response.data)) {
+                    response.data.forEach((item) => {
+                        newData.push(item.humidity);
+                        newLabels.push(new Date(item.timestamp).toISOString()); // Convert to ISO string for Chart.js
+                    });
+                    updateChart(newData, newLabels);
+                } else {
+                    console.log("Data is not an array");
+                }
+            }
+        }
+    });
+}
+
 
 })();
 

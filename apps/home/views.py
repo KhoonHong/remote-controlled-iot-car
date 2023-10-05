@@ -655,6 +655,7 @@ def get_sensor_data(request):
 
         # Group humidity by hour
         hourly_data = defaultdict(list)
+        hour_to_first_timestamp = {}  # To store a representative timestamp for each hour
 
         for doc in docs:
             doc_dict = doc.to_dict()
@@ -663,11 +664,14 @@ def get_sensor_data(request):
             hour = timestamp.hour  # Extracting hour from timestamp
             hourly_data[hour].append(doc_dict['humidity'])
 
+            if hour not in hour_to_first_timestamp:
+                hour_to_first_timestamp[hour] = timestamp_str
+
         # Calculate mean humidity for each hour
         hourly_mean = {hour: mean(values) for hour, values in hourly_data.items()}
 
         # Convert it back to the original format
-        averaged_data = [{'hour': hour, 'humidity': mean_humidity} for hour, mean_humidity in hourly_mean.items()]
+        averaged_data = [{'timestamp': hour_to_first_timestamp[hour], 'humidity': mean_humidity} for hour, mean_humidity in hourly_mean.items()]
 
         return JsonResponse({"status": "success", "data": averaged_data})
     except Exception as e:
