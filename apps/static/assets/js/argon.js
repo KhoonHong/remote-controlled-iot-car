@@ -936,10 +936,6 @@ var EnvironmentalDataChart = (function () {
 
 
 
-	
-
-})();
-
 function formatDateTime(dateTimeStr) {
 	const date = new Date(dateTimeStr);
 	const year = date.getFullYear();
