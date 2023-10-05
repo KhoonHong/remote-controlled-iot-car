@@ -669,16 +669,17 @@ def get_sensor_data(request):
         hourly_data_temperature = defaultdict(list)
 
         for doc in docs:
-            doc_dict = doc.to_dict()
+            # Sanitize the data
+            doc_dict = {key.strip(): value for key, value in doc.to_dict().items()}
             print(doc_dict)
             timestamp = doc_dict['timestamp']
             hour = timestamp.hour
             hourly_data_humidity[hour].append(doc_dict['humidity'])
-            hourly_data_temperature[hour].append(doc_dict['temperature '])
+            hourly_data_temperature[hour].append(doc_dict.get('temperature', None))
 
         # Calculate mean for each hour for humidity and temperature
         hourly_mean_humidity = {hour: mean(values) for hour, values in hourly_data_humidity.items()}
-        hourly_mean_temperature = {hour: mean(values) for hour, values in hourly_data_temperature.items()}
+        hourly_mean_temperature = {hour: mean(values) if values else None for hour, values in hourly_data_temperature.items()}
 
         # Convert it back to the original format
         averaged_data = [{'timestamp': datetime(year=timestamp.year, month=timestamp.month, day=timestamp.day, hour=hour).isoformat(),
