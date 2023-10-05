@@ -157,24 +157,35 @@ def index(request):
     try:
         db = firestore.client()
 
-        recent_temp, second_recent_temp = get_temperature_dashboard()
-        recent_humidity, second_recent_humidity = get_humidity_dashboard()
-        
-        # Calculate the difference between the two temperatures
-        diff = recent_temp - second_recent_temp
-        humidify_diff = recent_humidity - second_recent_humidity
-        print("Humidity Diff: " , humidify_diff)
+        try:
+            recent_temp, second_recent_temp = get_temperature_dashboard()
+        except Exception as e:
+            print(f"Error fetching temperature data: {e}")
+            recent_temp, second_recent_temp = None, None
 
-        latest_doc = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).stream()
+        try:
+            recent_humidity, second_recent_humidity = get_humidity_dashboard()
+        except Exception as e:
+            print(f"Error fetching humidity data: {e}")
+            recent_humidity, second_recent_humidity = None, None
 
-        for doc in latest_doc:
-            data = doc.to_dict()
-            geo_point = data.get('location')
-            
-            if geo_point:
-                latitude = geo_point.latitude
-                longitude = geo_point.longitude
-        location_name = get_location_by_coordinates(latitude, longitude)
+        diff = (recent_temp - second_recent_temp) if recent_temp and second_recent_temp else None
+        humidify_diff = (recent_humidity - second_recent_humidity) if recent_humidity and second_recent_humidity else None
+
+        try:
+            latest_doc = db.collection('gps_data').order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).stream()
+            for doc in latest_doc:
+                data = doc.to_dict()
+                geo_point = data.get('location')
+
+                if geo_point:
+                    latitude = geo_point.latitude
+                    longitude = geo_point.longitude
+        except Exception as e:
+            print(f"Error fetching GPS data: {e}")
+
+        location_name = get_location_by_coordinates(latitude, longitude) if latitude and longitude else (None, None)
+
         context = {
             'segment': 'index',
             'recent_temp': recent_temp,
@@ -183,8 +194,8 @@ def index(request):
             'recent_humidity': recent_humidity,
             'second_recent_humidity': second_recent_humidity,
             'humidify_diff': humidify_diff,
-            "location": f"{location_name[0]}, {location_name[1]}",
-            "coordinates": f"{latitude:.5f}, {longitude:.5f}"
+            "location": f"{location_name[0]}, {location_name[1]}" if location_name else None,
+            "coordinates": f"{latitude:.5f}, {longitude:.5f}" if latitude and longitude else None
         }
 
         html_template = loader.get_template('home/index.html')
@@ -192,6 +203,7 @@ def index(request):
     except Exception as e:
         print(f"Error in index view: {e}")
         return HttpResponseServerError('Could not render the template.')
+
 
 
 @login_required(login_url="/login/")
