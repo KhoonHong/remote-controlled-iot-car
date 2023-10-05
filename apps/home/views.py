@@ -26,6 +26,8 @@ from threading import Thread, Event
 import threading
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from collections import defaultdict
+from statistics import mean
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseServerError
 
 camera = Camera()
@@ -651,13 +653,19 @@ def get_sensor_data(request):
     try:
         db = firestore.client()
         docs = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING).stream()
-        
-        data = []
+
+        # Group humidity by hour
+        hourly_data = defaultdict(list)
+
         for doc in docs:
             doc_dict = doc.to_dict()
-            data.append(doc_dict)
-        
-        return JsonResponse({"status": "success", "data": data})
+            hour = doc_dict['timestamp'].hour  # Extracting hour from timestamp
+            hourly_data[hour].append(doc_dict['humidity'])
+
+        # Calculate mean humidity for each hour
+        hourly_mean = {hour: mean(values) for hour, values in hourly_data.items()}
+
+        return JsonResponse({"status": "success", "data": hourly_mean})
     except Exception as e:
         print(f"Error fetching sensor data: {e}")
         return JsonResponse({"status": "error", "message": "Could not fetch data"})
