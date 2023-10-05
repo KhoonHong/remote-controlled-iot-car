@@ -39,7 +39,7 @@ def motor_backward():
         GPIO.output([IN2, IN4], False)
 
 def motor_stop():
-    if GPIO is not None and GPIO.gpio_function(IN1) == GPIO.OUT:
+    if GPIO is not None:
         GPIO.output(IN1, False)
         GPIO.output(IN2, False)
         GPIO.output(IN3, False)

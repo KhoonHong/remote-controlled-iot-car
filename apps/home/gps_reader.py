@@ -32,6 +32,7 @@ def read_gps():
     while True:  # Add a continuous loop to read data
         newdata = ser.readline()
         print("Reading data from gps...")
+        print(newdata)
         if '$GPRMC' in str(newdata):
             try:
                 newmsg = pynmea2.parse(newdata.decode('utf-8'))
