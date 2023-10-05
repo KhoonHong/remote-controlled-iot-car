@@ -620,8 +620,9 @@ def get_temperature_dashboard():
         
         # Loop through query results and store in the list
         for doc in docs:
-            doc_dict = doc.to_dict()
-            temperatures.append(doc_dict.get('temperature'))
+            # Sanitize the data
+            doc_dict = {key.strip(): value for key, value in doc.to_dict().items()}
+            temperatures.append(doc_dict.get('temperature', None))
         
         # Check if there are enough readings
         if len(temperatures) < 2:
@@ -632,6 +633,7 @@ def get_temperature_dashboard():
 
     except Exception as e:
         print(f"Error retrieving temperature: {e}")
+
 
 
 def get_humidity_dashboard():
