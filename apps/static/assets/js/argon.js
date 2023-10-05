@@ -921,7 +921,11 @@ var EnvironmentalDataChart = (function () {
 							newData.push(item.temperature);
 							newLabels.push(new Date(item.timestamp).toISOString());
 						});
-						init($chart, newData, newLabels);  // Initialize chart
+						if (!envDataChart) {
+							init($chart, newData, newLabels);  // Initialize chart if it's not already initialized
+						} else {
+							updateChart(newData, newLabels);  // Update the chart if it's already initialized
+						}
 					} else {
 						console.log("Data is not an array.");
 					}
@@ -1218,11 +1222,11 @@ function sendDataToBackend(x, y) {
 $(document).ready(function () {
 	// CSRF Token needed for Django POST requests
 	var csrfToken = $("[name=csrfmiddlewaretoken]").val();
-	var newData = [];
-	var newLabels = [];
-	newData, newLabels = updateSensorData();
-	// Initialize your chart
-	init($('#chart-environmental-data'), newData, newLabels);
+	// var newData = [];
+	// var newLabels = [];
+	// newData, newLabels = updateSensorData();
+	// // Initialize your chart
+	// init($('#chart-environmental-data'), newData, newLabels);
 
 	$(window).on("gamepadconnected", function (e) {
 		const gamepad = e.originalEvent.gamepad
@@ -1242,10 +1246,6 @@ $(document).ready(function () {
 		});
 		gamepadConnected = false;
 	});
-
-	setInterval(function () {
-		updateSensorData($chart);
-	}, 60000);  // Update every 60 seconds
 
 	function updateGamepad() {
 		let gamepad = navigator.getGamepads()[0];
