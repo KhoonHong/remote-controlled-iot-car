@@ -775,43 +775,91 @@ var FormControl = (function () {
 
 var BarsChart = (function () {
 
-	//
 	// Variables
-	//
-
 	var $chart = $('#chart-bars');
-
-
-	//
-	// Methods
-	//
+	var ordersChart;
 
 	// Init chart
-	function initChart($chart) {
-
-		// Create chart
-		var ordersChart = new Chart($chart, {
+	function initChart($chart, data, labels) {
+		ordersChart = new Chart($chart, {
 			type: 'bar',
 			data: {
-				labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+				labels: labels,
 				datasets: [{
-					label: 'Sales',
-					data: [25, 20, 30, 22, 17, 29]
+					label: 'Humidity',
+					data: data
 				}]
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						ticks: {
+							callback: function(value) {
+								return value + ' g/kg';
+							}
+						}
+					}],
+					xAxes: [{
+						type: 'time',
+						time: {
+						  unit: 'hour', // Change the unit to 'hour'
+						  displayFormats: {
+							hour: 'MM/DD, h A' // Will display like '10/04, 6 PM'
+						  }
+						},
+						gridLines: {
+						  lineWidth: 1,
+						  color: 'gray',
+						  zeroLineColor: 'gray'
+						}
+					  }]
+				},
+				tooltips: {
+					callbacks: {
+						label: function(item, data) {
+							var label = data.datasets[item.datasetIndex].label || '';
+							var yLabel = item.yLabel;
+							return label + ': ' + yLabel + ' g/kg';
+						}
+					}
+				}
 			}
 		});
-
-		// Save to jQuery object
 		$chart.data('chart', ordersChart);
 	}
+	
 
+	// Update chart
+	function updateChart(newData, newLabels) {
+		ordersChart.data.labels = newLabels;
+		ordersChart.data.datasets[0].data = newData;
+		ordersChart.update();
+	}
 
-	// Init chart
+	// Initialize the chart with empty data
 	if ($chart.length) {
-		initChart($chart);
+		initChart($chart, [], []);
+
+		// AJAX request to populate data
+		$.ajax({
+			url: "/get_sensor_data/",
+			method: "GET",
+			success: function (response) {
+				if (response.status === "success") {
+					let newData = [];
+					let newLabels = [];
+					response.data.forEach((item) => {
+						newData.push(item.humidity);
+						newLabels.push(item.timestamp);
+					});
+					updateChart(newData, newLabels);
+				}
+			}
+		});
 	}
 
 })();
+
 
 'use strict';
 var init;
@@ -1267,11 +1315,11 @@ $(document).ready(function () {
 				// Code to vibrate the Xbox controller
 				const gamepads = navigator.getGamepads();
 				if (gamepads[0]) {
-					gamepads[0].vibrationActuator.playEffect("dual-rumble", {
-						duration: 1000,
-						strongMagnitude: 1.0,
-						weakMagnitude: 1.0
-					});
+					// gamepads[0].vibrationActuator.playEffect("dual-rumble", {
+					// 	duration: 1000,
+					// 	strongMagnitude: 1.0,
+					// 	weakMagnitude: 1.0
+					// });
 				}
 			}
 		} catch (error) {
