@@ -351,16 +351,14 @@ def set_oled_message(request):
         query = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING)
         docs = query.stream()
 
+        # Initialize list to hold humidity data
         humidities = []
-
+        
+        # Loop through query results and store in the list
         for doc in docs:
-            # Sanitize the data
-            doc_dict = {key.strip(): value for key, value in doc.to_dict().items()}
-            humidities.append(doc_dict.get('humidity', None))
+            doc_dict = doc.to_dict()
+            humidities.append(doc_dict.get('humidity'))
 
-
-        # Initialize humidity list
-        humidities = [doc.to_dict()['humidity'] for doc in docs]
         # Fetch most recent humidity value
         most_recent_humidity = humidities[0] if humidities else None
 
