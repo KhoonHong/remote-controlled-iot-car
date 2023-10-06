@@ -28,23 +28,26 @@ def store_to_firestore(latitude, longitude):
     except Exception as e:
         print(f"Error saving to Firestore: {e}")
 
+
 def read_gps():
     while True:  # Add a continuous loop to read data
-        newdata = ser.readline()
+        newdata = ser.readline()  # read a line of data from the serial port
+        
         print("Reading data from gps...")
         print(newdata)
-        if '$GPRMC' in str(newdata):
+        
+        if '$GPRMC' in str(newdata):  # check if the data contains the GPRMC string
             try:
-                newmsg = pynmea2.parse(newdata.decode('utf-8'))
-                if newmsg.is_valid:  # Check if GPS data is valid
-                    lat = newmsg.latitude
-                    lng = newmsg.longitude
-                    gps = f"Latitude = {lat} and Longitude = {lng}"
-                    print(gps)
-                    store_to_firestore(lat, lng)  # Store data to Firestore
+                newmsg = pynmea2.parse(newdata.decode('utf-8'))  # decode and parse the data
+                lat = newmsg.latitude  # get latitude
+                lng = newmsg.longitude  # get longitude
+                gps = f"Latitude = {lat} and Longitude = {lng}"  # format the output
+                print(gps)
+                store_to_firestore(lat, lng)  # Store data to Firestore
             except pynmea2.nmea.ParseError:
-                print("Error parsing NMEA sentence.")
+                print("Error parsing NMEA sentence.")  # error handling
         time.sleep(60)  # Consider reducing or removing this sleep depending on your needs
+
 
 def start_reading_gps():
     thread = threading.Thread(target=read_gps)
