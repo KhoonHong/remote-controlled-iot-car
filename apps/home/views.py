@@ -635,7 +635,6 @@ def get_temperature_dashboard():
         print(f"Error retrieving temperature: {e}")
 
 
-
 def get_humidity_dashboard():
     try:
         # Initialize Firestore client
@@ -673,7 +672,6 @@ def get_sensor_data(request):
         for doc in docs:
             # Sanitize the data
             doc_dict = {key.strip(): value for key, value in doc.to_dict().items()}
-            print(doc_dict)
             timestamp = doc_dict['timestamp']
             hour = timestamp.hour
             hourly_data_humidity[hour].append(doc_dict['humidity'])
