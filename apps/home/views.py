@@ -248,18 +248,6 @@ def stop_recording(request):
     return JsonResponse({'status': 'recording stopped'})
 
 
-def get_temperature_humidity(request):
-    # db = firestore.client()
-    # docs = db.collection('dht11_data').get()
-    temperature = []
-    humidity = []
-    # for doc in docs:
-    #     data = doc.to_dict()
-    #     temperature.append(data['temperature'])
-    #     humidity.append(data['humidity'])
-    
-    return JsonResponse({'temperature': temperature, 'humidity': humidity})
-
 @csrf_exempt
 def control_car_view(request):
     if request.method == 'POST':
@@ -331,9 +319,14 @@ def set_oled_message(request):
     if message_type == 'temperature':
         query = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING)
         docs = query.stream()
-
+        # Initialize list to hold temperature data
+        temperatures = []
         # Initialize temperature list
-        temperatures = [doc.to_dict()['temperature'] for doc in docs]
+        # Loop through query results and store in the list
+        for doc in docs:
+            # Sanitize the data
+            doc_dict = {key.strip(): value for key, value in doc.to_dict().items()}
+            temperatures.append(doc_dict.get('temperature', None))
 
         # Calculate metrics for display
         if not temperatures:
@@ -357,6 +350,14 @@ def set_oled_message(request):
     elif message_type == 'humidity':
         query = db.collection('dht11_data').order_by('timestamp', direction=firestore.Query.DESCENDING)
         docs = query.stream()
+
+        humidities = []
+
+        for doc in docs:
+            # Sanitize the data
+            doc_dict = {key.strip(): value for key, value in doc.to_dict().items()}
+            humidities.append(doc_dict.get('humidity', None))
+
 
         # Initialize humidity list
         humidities = [doc.to_dict()['humidity'] for doc in docs]
