@@ -143,7 +143,7 @@ STATICFILES_DIRS = (
 import firebase_admin
 from firebase_admin import credentials
 
-# cred = credentials.Certificate('../iot-assignment-b634b-firebase-adminsdk-iwueg-c528ad4a6e.json')
+cred = credentials.Certificate('../iot-assignment-b634b-firebase-adminsdk-iwueg-c528ad4a6e.json')
 # cred = credentials.Certificate('../rpi-vr-cc325-firebase-adminsdk-igcbh-f048e8f213.json')
-cred = credentials.Certificate('../rpi-vr2-firebase-adminsdk-i9aul-4fa91da034.json')
+# cred = credentials.Certificate('../rpi-vr2-firebase-adminsdk-i9aul-4fa91da034.json')
 firebase_admin.initialize_app(cred)
