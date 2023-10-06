@@ -41,6 +41,9 @@ def read_gps():
                 newmsg = pynmea2.parse(newdata.decode('utf-8'))  # decode and parse the data
                 lat = newmsg.latitude  # get latitude
                 lng = newmsg.longitude  # get longitude
+                if lat == 0.0 and lng == 0.0:
+                    print("No satellite data available")
+                    continue
                 gps = f"Latitude = {lat} and Longitude = {lng}"  # format the output
                 print(gps)
                 store_to_firestore(lat, lng)  # Store data to Firestore
